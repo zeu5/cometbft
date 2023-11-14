@@ -738,6 +738,9 @@ type P2PConfig struct { //nolint: maligned
 	// Fuzz connection
 	TestFuzz       bool            `mapstructure:"test_fuzz"`
 	TestFuzzConfig *FuzzConnConfig `mapstructure:"test_fuzz_config"`
+	// Intercept config
+	TestIntercept       bool             `mapstructure:"test_intercept"`
+	TestInterceptConfig *InterceptConfig `mapstructure:"test_intercept_config"`
 }
 
 // DefaultP2PConfig returns a default configuration for the peer-to-peer layer
@@ -762,6 +765,8 @@ func DefaultP2PConfig() *P2PConfig {
 		TestDialFail:                 false,
 		TestFuzz:                     false,
 		TestFuzzConfig:               DefaultFuzzConnConfig(),
+		TestIntercept:                false,
+		TestInterceptConfig:          DefaultInterceptConfig(),
 	}
 }
 
@@ -804,6 +809,18 @@ func (cfg *P2PConfig) ValidateBasic() error {
 		return cmterrors.ErrNegativeField{Field: "recv_rate"}
 	}
 	return nil
+}
+
+type InterceptConfig struct {
+	ListenAddr string `mapstructure:"intercept_listen_addr"`
+	ServerAddr string `mapstructure:"intercept_server_addr"`
+}
+
+func DefaultInterceptConfig() *InterceptConfig {
+	return &InterceptConfig{
+		ListenAddr: "",
+		ServerAddr: "",
+	}
 }
 
 // FuzzConnConfig is a FuzzedConnection configuration.
