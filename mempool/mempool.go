@@ -4,9 +4,9 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	abcicli "github.com/cometbft/cometbft/abci/client"
-	abci "github.com/cometbft/cometbft/abci/types"
-	"github.com/cometbft/cometbft/types"
+	abcicli "github.com/zeu5/cometbft/abci/client"
+	abci "github.com/zeu5/cometbft/abci/types"
+	"github.com/zeu5/cometbft/types"
 )
 
 const (

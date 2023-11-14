@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cometbft/cometbft/crypto/merkle"
-	cmtrand "github.com/cometbft/cometbft/libs/rand"
+	"github.com/zeu5/cometbft/crypto/merkle"
+	cmtrand "github.com/zeu5/cometbft/libs/rand"
 )
 
 const (

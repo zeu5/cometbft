@@ -3,8 +3,8 @@ package app
 import (
 	"testing"
 
-	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/stretchr/testify/require"
+	abci "github.com/zeu5/cometbft/abci/types"
 )
 
 // Tests for logging each type of requests.

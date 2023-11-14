@@ -9,10 +9,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cometbft/cometbft/abci/example/kvstore"
-	abci "github.com/cometbft/cometbft/abci/types"
-	"github.com/cometbft/cometbft/proxy"
-	"github.com/cometbft/cometbft/types"
+	"github.com/zeu5/cometbft/abci/example/kvstore"
+	abci "github.com/zeu5/cometbft/abci/types"
+	"github.com/zeu5/cometbft/proxy"
+	"github.com/zeu5/cometbft/types"
 )
 
 func TestCacheRemove(t *testing.T) {

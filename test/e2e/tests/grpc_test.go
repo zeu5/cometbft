@@ -6,11 +6,11 @@ import (
 	"testing"
 	"time"
 
-	coretypes "github.com/cometbft/cometbft/rpc/core/types"
-	"github.com/cometbft/cometbft/rpc/grpc/client/privileged"
-	e2e "github.com/cometbft/cometbft/test/e2e/pkg"
-	"github.com/cometbft/cometbft/version"
 	"github.com/stretchr/testify/require"
+	coretypes "github.com/zeu5/cometbft/rpc/core/types"
+	"github.com/zeu5/cometbft/rpc/grpc/client/privileged"
+	e2e "github.com/zeu5/cometbft/test/e2e/pkg"
+	"github.com/zeu5/cometbft/version"
 )
 
 func TestGRPC_Version(t *testing.T) {

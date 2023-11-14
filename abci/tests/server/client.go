@@ -6,9 +6,9 @@ import (
 	"errors"
 	"fmt"
 
-	abcicli "github.com/cometbft/cometbft/abci/client"
-	"github.com/cometbft/cometbft/abci/types"
-	cmtrand "github.com/cometbft/cometbft/libs/rand"
+	abcicli "github.com/zeu5/cometbft/abci/client"
+	"github.com/zeu5/cometbft/abci/types"
+	cmtrand "github.com/zeu5/cometbft/libs/rand"
 )
 
 func InitChain(ctx context.Context, client abcicli.Client) error {

@@ -5,8 +5,8 @@ package v1
 
 import (
 	fmt "fmt"
-	types "github.com/cometbft/cometbft/abci/types"
-	types1 "github.com/cometbft/cometbft/proto/tendermint/types"
+	types "github.com/zeu5/cometbft/abci/types"
+	types1 "github.com/zeu5/cometbft/proto/tendermint/types"
 	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"

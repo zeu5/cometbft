@@ -15,14 +15,14 @@ import (
 
 	"github.com/BurntSushi/toml"
 
-	"github.com/cometbft/cometbft/config"
-	"github.com/cometbft/cometbft/crypto/ed25519"
-	"github.com/cometbft/cometbft/libs/log"
-	"github.com/cometbft/cometbft/p2p"
-	"github.com/cometbft/cometbft/privval"
-	e2e "github.com/cometbft/cometbft/test/e2e/pkg"
-	"github.com/cometbft/cometbft/test/e2e/pkg/infra"
-	"github.com/cometbft/cometbft/types"
+	"github.com/zeu5/cometbft/config"
+	"github.com/zeu5/cometbft/crypto/ed25519"
+	"github.com/zeu5/cometbft/libs/log"
+	"github.com/zeu5/cometbft/p2p"
+	"github.com/zeu5/cometbft/privval"
+	e2e "github.com/zeu5/cometbft/test/e2e/pkg"
+	"github.com/zeu5/cometbft/test/e2e/pkg/infra"
+	"github.com/zeu5/cometbft/types"
 )
 
 const (

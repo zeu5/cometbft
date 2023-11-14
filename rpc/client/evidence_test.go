@@ -9,17 +9,17 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	"github.com/cometbft/cometbft/crypto/ed25519"
-	cryptoenc "github.com/cometbft/cometbft/crypto/encoding"
-	"github.com/cometbft/cometbft/crypto/tmhash"
-	"github.com/cometbft/cometbft/internal/test"
-	cmtrand "github.com/cometbft/cometbft/libs/rand"
-	"github.com/cometbft/cometbft/privval"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	"github.com/cometbft/cometbft/rpc/client"
-	rpctest "github.com/cometbft/cometbft/rpc/test"
-	"github.com/cometbft/cometbft/types"
+	abci "github.com/zeu5/cometbft/abci/types"
+	"github.com/zeu5/cometbft/crypto/ed25519"
+	cryptoenc "github.com/zeu5/cometbft/crypto/encoding"
+	"github.com/zeu5/cometbft/crypto/tmhash"
+	"github.com/zeu5/cometbft/internal/test"
+	cmtrand "github.com/zeu5/cometbft/libs/rand"
+	"github.com/zeu5/cometbft/privval"
+	cmtproto "github.com/zeu5/cometbft/proto/tendermint/types"
+	"github.com/zeu5/cometbft/rpc/client"
+	rpctest "github.com/zeu5/cometbft/rpc/test"
+	"github.com/zeu5/cometbft/types"
 )
 
 // For some reason the empty node used in tests has a time of

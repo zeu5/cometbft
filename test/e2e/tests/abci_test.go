@@ -3,9 +3,9 @@ package e2e_test
 import (
 	"testing"
 
-	e2e "github.com/cometbft/cometbft/test/e2e/pkg"
-	"github.com/cometbft/cometbft/test/e2e/pkg/grammar"
 	"github.com/stretchr/testify/require"
+	e2e "github.com/zeu5/cometbft/test/e2e/pkg"
+	"github.com/zeu5/cometbft/test/e2e/pkg/grammar"
 )
 
 func TestCheckABCIGrammar(t *testing.T) {

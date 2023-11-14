@@ -8,10 +8,10 @@ import (
 
 	"github.com/google/orderedcode"
 
-	idxutil "github.com/cometbft/cometbft/internal/indexer"
-	"github.com/cometbft/cometbft/libs/pubsub/query/syntax"
-	"github.com/cometbft/cometbft/state/indexer"
-	"github.com/cometbft/cometbft/types"
+	idxutil "github.com/zeu5/cometbft/internal/indexer"
+	"github.com/zeu5/cometbft/libs/pubsub/query/syntax"
+	"github.com/zeu5/cometbft/state/indexer"
+	"github.com/zeu5/cometbft/types"
 )
 
 type HeightInfo struct {

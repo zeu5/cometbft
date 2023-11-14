@@ -11,16 +11,16 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cometbft/cometbft/libs/log"
-	cmtos "github.com/cometbft/cometbft/libs/os"
+	"github.com/zeu5/cometbft/libs/log"
+	cmtos "github.com/zeu5/cometbft/libs/os"
 
-	abcicli "github.com/cometbft/cometbft/abci/client"
-	"github.com/cometbft/cometbft/abci/example/kvstore"
-	"github.com/cometbft/cometbft/abci/server"
-	servertest "github.com/cometbft/cometbft/abci/tests/server"
-	"github.com/cometbft/cometbft/abci/types"
-	"github.com/cometbft/cometbft/abci/version"
-	"github.com/cometbft/cometbft/proto/tendermint/crypto"
+	abcicli "github.com/zeu5/cometbft/abci/client"
+	"github.com/zeu5/cometbft/abci/example/kvstore"
+	"github.com/zeu5/cometbft/abci/server"
+	servertest "github.com/zeu5/cometbft/abci/tests/server"
+	"github.com/zeu5/cometbft/abci/types"
+	"github.com/zeu5/cometbft/abci/version"
+	"github.com/zeu5/cometbft/proto/tendermint/crypto"
 )
 
 // client is a global variable so it can be reused by the console

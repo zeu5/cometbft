@@ -8,14 +8,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cometbft/cometbft/crypto"
-	"github.com/cometbft/cometbft/crypto/tmhash"
-	cmtrand "github.com/cometbft/cometbft/libs/rand"
-	cryptoproto "github.com/cometbft/cometbft/proto/tendermint/crypto"
-	privvalproto "github.com/cometbft/cometbft/proto/tendermint/privval"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	"github.com/cometbft/cometbft/types"
-	cmterrors "github.com/cometbft/cometbft/types/errors"
+	"github.com/zeu5/cometbft/crypto"
+	"github.com/zeu5/cometbft/crypto/tmhash"
+	cmtrand "github.com/zeu5/cometbft/libs/rand"
+	cryptoproto "github.com/zeu5/cometbft/proto/tendermint/crypto"
+	privvalproto "github.com/zeu5/cometbft/proto/tendermint/privval"
+	cmtproto "github.com/zeu5/cometbft/proto/tendermint/types"
+	"github.com/zeu5/cometbft/types"
+	cmterrors "github.com/zeu5/cometbft/types/errors"
 )
 
 type signerTestCase struct {

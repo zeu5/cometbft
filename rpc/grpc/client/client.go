@@ -1,7 +1,7 @@
 // Note that no auto-generated gRPC code is directly exposed via the client
 // interface. This is on purpose to minimize the potential impact on users of
 // switching to Google's Go code generator in future. See
-// https://github.com/cometbft/cometbft/issues/731 for more details.
+// https://github.com/zeu5/cometbft/issues/731 for more details.
 package client
 
 import (
@@ -12,7 +12,7 @@ import (
 	ggrpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	cmtnet "github.com/cometbft/cometbft/libs/net"
+	cmtnet "github.com/zeu5/cometbft/libs/net"
 )
 
 type Option func(*clientBuilder)

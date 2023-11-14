@@ -7,16 +7,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cometbft/cometbft/libs/bytes"
-	cmtjson "github.com/cometbft/cometbft/libs/json"
-	"github.com/cometbft/cometbft/libs/log"
-	cmtpubsub "github.com/cometbft/cometbft/libs/pubsub"
-	"github.com/cometbft/cometbft/libs/service"
-	cmtsync "github.com/cometbft/cometbft/libs/sync"
-	rpcclient "github.com/cometbft/cometbft/rpc/client"
-	ctypes "github.com/cometbft/cometbft/rpc/core/types"
-	jsonrpcclient "github.com/cometbft/cometbft/rpc/jsonrpc/client"
-	"github.com/cometbft/cometbft/types"
+	"github.com/zeu5/cometbft/libs/bytes"
+	cmtjson "github.com/zeu5/cometbft/libs/json"
+	"github.com/zeu5/cometbft/libs/log"
+	cmtpubsub "github.com/zeu5/cometbft/libs/pubsub"
+	"github.com/zeu5/cometbft/libs/service"
+	cmtsync "github.com/zeu5/cometbft/libs/sync"
+	rpcclient "github.com/zeu5/cometbft/rpc/client"
+	ctypes "github.com/zeu5/cometbft/rpc/core/types"
+	jsonrpcclient "github.com/zeu5/cometbft/rpc/jsonrpc/client"
+	"github.com/zeu5/cometbft/types"
 )
 
 /*

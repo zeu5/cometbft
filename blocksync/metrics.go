@@ -3,7 +3,7 @@ package blocksync
 import (
 	"github.com/go-kit/kit/metrics"
 
-	"github.com/cometbft/cometbft/types"
+	"github.com/zeu5/cometbft/types"
 )
 
 const (

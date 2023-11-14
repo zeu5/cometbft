@@ -7,14 +7,14 @@ import (
 	"sync/atomic"
 	"time"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	cfg "github.com/cometbft/cometbft/config"
-	"github.com/cometbft/cometbft/libs/clist"
-	"github.com/cometbft/cometbft/libs/log"
-	cmtsync "github.com/cometbft/cometbft/libs/sync"
-	"github.com/cometbft/cometbft/p2p"
-	protomem "github.com/cometbft/cometbft/proto/tendermint/mempool"
-	"github.com/cometbft/cometbft/types"
+	abci "github.com/zeu5/cometbft/abci/types"
+	cfg "github.com/zeu5/cometbft/config"
+	"github.com/zeu5/cometbft/libs/clist"
+	"github.com/zeu5/cometbft/libs/log"
+	cmtsync "github.com/zeu5/cometbft/libs/sync"
+	"github.com/zeu5/cometbft/p2p"
+	protomem "github.com/zeu5/cometbft/proto/tendermint/mempool"
+	"github.com/zeu5/cometbft/types"
 	"golang.org/x/sync/semaphore"
 )
 
@@ -259,7 +259,7 @@ func (memR *Reactor) broadcastTxRoutine(peer p2p.Peer) {
 		// reduces the mempool size and the recheck-tx rate of the receiving
 		// node. See [RFC 103] for an analysis on this optimization.
 		//
-		// [RFC 103]: https://github.com/cometbft/cometbft/pull/735
+		// [RFC 103]: https://github.com/zeu5/cometbft/pull/735
 		memTx := next.Value.(*mempoolTx)
 		if peerState.GetHeight() < memTx.Height()-1 {
 			time.Sleep(PeerCatchupSleepIntervalMS * time.Millisecond)

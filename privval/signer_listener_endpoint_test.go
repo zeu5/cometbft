@@ -8,11 +8,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cometbft/cometbft/crypto/ed25519"
-	"github.com/cometbft/cometbft/libs/log"
-	cmtnet "github.com/cometbft/cometbft/libs/net"
-	cmtrand "github.com/cometbft/cometbft/libs/rand"
-	"github.com/cometbft/cometbft/types"
+	"github.com/zeu5/cometbft/crypto/ed25519"
+	"github.com/zeu5/cometbft/libs/log"
+	cmtnet "github.com/zeu5/cometbft/libs/net"
+	cmtrand "github.com/zeu5/cometbft/libs/rand"
+	"github.com/zeu5/cometbft/types"
 )
 
 var (

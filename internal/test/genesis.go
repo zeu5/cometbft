@@ -3,7 +3,7 @@ package test
 import (
 	"time"
 
-	"github.com/cometbft/cometbft/types"
+	"github.com/zeu5/cometbft/types"
 )
 
 func GenesisDoc(

@@ -4,14 +4,14 @@ import (
 	"testing"
 	"time"
 
-	cfg "github.com/cometbft/cometbft/config"
-	"github.com/cometbft/cometbft/libs/bytes"
-	"github.com/cometbft/cometbft/libs/log"
-	cmtrand "github.com/cometbft/cometbft/libs/rand"
-	"github.com/cometbft/cometbft/p2p"
-	cmtcons "github.com/cometbft/cometbft/proto/tendermint/consensus"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	"github.com/cometbft/cometbft/types"
+	cfg "github.com/zeu5/cometbft/config"
+	"github.com/zeu5/cometbft/libs/bytes"
+	"github.com/zeu5/cometbft/libs/log"
+	cmtrand "github.com/zeu5/cometbft/libs/rand"
+	"github.com/zeu5/cometbft/p2p"
+	cmtcons "github.com/zeu5/cometbft/proto/tendermint/consensus"
+	cmtproto "github.com/zeu5/cometbft/proto/tendermint/types"
+	"github.com/zeu5/cometbft/types"
 )
 
 //----------------------------------------------

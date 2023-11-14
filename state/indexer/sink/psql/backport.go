@@ -17,12 +17,12 @@ import (
 	"context"
 	"errors"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"github.com/zeu5/cometbft/libs/log"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	"github.com/cometbft/cometbft/libs/pubsub/query"
-	"github.com/cometbft/cometbft/state/txindex"
-	"github.com/cometbft/cometbft/types"
+	abci "github.com/zeu5/cometbft/abci/types"
+	"github.com/zeu5/cometbft/libs/pubsub/query"
+	"github.com/zeu5/cometbft/state/txindex"
+	"github.com/zeu5/cometbft/types"
 )
 
 const (

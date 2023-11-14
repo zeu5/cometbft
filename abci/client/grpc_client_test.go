@@ -14,12 +14,12 @@ import (
 
 	"golang.org/x/net/context"
 
-	"github.com/cometbft/cometbft/libs/log"
-	cmtnet "github.com/cometbft/cometbft/libs/net"
+	"github.com/zeu5/cometbft/libs/log"
+	cmtnet "github.com/zeu5/cometbft/libs/net"
 	"google.golang.org/grpc/credentials/insecure"
 
-	abciserver "github.com/cometbft/cometbft/abci/server"
-	"github.com/cometbft/cometbft/abci/types"
+	abciserver "github.com/zeu5/cometbft/abci/server"
+	"github.com/zeu5/cometbft/abci/types"
 )
 
 func TestGRPC(t *testing.T) {

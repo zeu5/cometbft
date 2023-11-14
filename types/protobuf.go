@@ -1,10 +1,10 @@
 package types
 
 import (
-	abci "github.com/cometbft/cometbft/abci/types"
-	"github.com/cometbft/cometbft/crypto"
-	cryptoenc "github.com/cometbft/cometbft/crypto/encoding"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	abci "github.com/zeu5/cometbft/abci/types"
+	"github.com/zeu5/cometbft/crypto"
+	cryptoenc "github.com/zeu5/cometbft/crypto/encoding"
+	cmtproto "github.com/zeu5/cometbft/proto/tendermint/types"
 )
 
 //-------------------------------------------------------

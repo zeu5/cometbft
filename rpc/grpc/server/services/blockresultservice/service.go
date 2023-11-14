@@ -6,11 +6,11 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cometbft/cometbft/libs/log"
-	sm "github.com/cometbft/cometbft/state"
-	"github.com/cometbft/cometbft/store"
+	"github.com/zeu5/cometbft/libs/log"
+	sm "github.com/zeu5/cometbft/state"
+	"github.com/zeu5/cometbft/store"
 
-	brs "github.com/cometbft/cometbft/proto/tendermint/services/block_results/v1"
+	brs "github.com/zeu5/cometbft/proto/tendermint/services/block_results/v1"
 )
 
 type blockResultsService struct {

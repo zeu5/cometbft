@@ -12,20 +12,20 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cometbft/cometbft/libs/log"
-	"github.com/cometbft/cometbft/state"
+	"github.com/zeu5/cometbft/libs/log"
+	"github.com/zeu5/cometbft/state"
 
 	"github.com/cosmos/gogoproto/proto"
 
 	dbm "github.com/cometbft/cometbft-db"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	idxutil "github.com/cometbft/cometbft/internal/indexer"
-	"github.com/cometbft/cometbft/libs/pubsub/query"
-	"github.com/cometbft/cometbft/libs/pubsub/query/syntax"
-	"github.com/cometbft/cometbft/state/indexer"
-	"github.com/cometbft/cometbft/state/txindex"
-	"github.com/cometbft/cometbft/types"
+	abci "github.com/zeu5/cometbft/abci/types"
+	idxutil "github.com/zeu5/cometbft/internal/indexer"
+	"github.com/zeu5/cometbft/libs/pubsub/query"
+	"github.com/zeu5/cometbft/libs/pubsub/query/syntax"
+	"github.com/zeu5/cometbft/state/indexer"
+	"github.com/zeu5/cometbft/state/txindex"
+	"github.com/zeu5/cometbft/types"
 )
 
 const (

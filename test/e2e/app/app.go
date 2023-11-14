@@ -16,15 +16,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cometbft/cometbft/abci/example/kvstore"
-	abci "github.com/cometbft/cometbft/abci/types"
-	"github.com/cometbft/cometbft/crypto"
-	cryptoenc "github.com/cometbft/cometbft/crypto/encoding"
-	"github.com/cometbft/cometbft/libs/log"
-	"github.com/cometbft/cometbft/libs/protoio"
-	cryptoproto "github.com/cometbft/cometbft/proto/tendermint/crypto"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	"github.com/cometbft/cometbft/version"
+	"github.com/zeu5/cometbft/abci/example/kvstore"
+	abci "github.com/zeu5/cometbft/abci/types"
+	"github.com/zeu5/cometbft/crypto"
+	cryptoenc "github.com/zeu5/cometbft/crypto/encoding"
+	"github.com/zeu5/cometbft/libs/log"
+	"github.com/zeu5/cometbft/libs/protoio"
+	cryptoproto "github.com/zeu5/cometbft/proto/tendermint/crypto"
+	cmtproto "github.com/zeu5/cometbft/proto/tendermint/types"
+	"github.com/zeu5/cometbft/version"
 )
 
 const (

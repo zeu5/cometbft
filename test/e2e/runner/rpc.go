@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"time"
 
-	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
-	rpctypes "github.com/cometbft/cometbft/rpc/core/types"
-	e2e "github.com/cometbft/cometbft/test/e2e/pkg"
-	"github.com/cometbft/cometbft/types"
+	rpchttp "github.com/zeu5/cometbft/rpc/client/http"
+	rpctypes "github.com/zeu5/cometbft/rpc/core/types"
+	e2e "github.com/zeu5/cometbft/test/e2e/pkg"
+	"github.com/zeu5/cometbft/types"
 )
 
 // waitForHeight waits for the network to reach a certain height (or above),

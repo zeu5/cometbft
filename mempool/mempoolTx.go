@@ -3,7 +3,7 @@ package mempool
 import (
 	"sync/atomic"
 
-	"github.com/cometbft/cometbft/types"
+	"github.com/zeu5/cometbft/types"
 )
 
 // mempoolTx is an entry in the mempool

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/gogoproto/proto"
+	abci "github.com/zeu5/cometbft/abci/types"
 )
 
 const AbciReq = "abci-req"

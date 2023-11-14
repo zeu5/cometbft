@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	abci "github.com/zeu5/cometbft/abci/types"
+	cmtproto "github.com/zeu5/cometbft/proto/tendermint/types"
 
 	"github.com/cosmos/gogoproto/grpc"
 
-	brs "github.com/cometbft/cometbft/proto/tendermint/services/block_results/v1"
+	brs "github.com/zeu5/cometbft/proto/tendermint/services/block_results/v1"
 )
 
 type BlockResults struct {

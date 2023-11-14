@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"time"
 
-	cmtpubsub "github.com/cometbft/cometbft/libs/pubsub"
-	cmtquery "github.com/cometbft/cometbft/libs/pubsub/query"
-	ctypes "github.com/cometbft/cometbft/rpc/core/types"
-	rpctypes "github.com/cometbft/cometbft/rpc/jsonrpc/types"
+	cmtpubsub "github.com/zeu5/cometbft/libs/pubsub"
+	cmtquery "github.com/zeu5/cometbft/libs/pubsub/query"
+	ctypes "github.com/zeu5/cometbft/rpc/core/types"
+	rpctypes "github.com/zeu5/cometbft/rpc/jsonrpc/types"
 )
 
 const (

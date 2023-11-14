@@ -6,14 +6,14 @@ import (
 	"fmt"
 	"time"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	cryptoenc "github.com/cometbft/cometbft/crypto/encoding"
-	"github.com/cometbft/cometbft/libs/fail"
-	"github.com/cometbft/cometbft/libs/log"
-	"github.com/cometbft/cometbft/mempool"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	"github.com/cometbft/cometbft/proxy"
-	"github.com/cometbft/cometbft/types"
+	abci "github.com/zeu5/cometbft/abci/types"
+	cryptoenc "github.com/zeu5/cometbft/crypto/encoding"
+	"github.com/zeu5/cometbft/libs/fail"
+	"github.com/zeu5/cometbft/libs/log"
+	"github.com/zeu5/cometbft/mempool"
+	cmtproto "github.com/zeu5/cometbft/proto/tendermint/types"
+	"github.com/zeu5/cometbft/proxy"
+	"github.com/zeu5/cometbft/types"
 )
 
 //-----------------------------------------------------------------------------

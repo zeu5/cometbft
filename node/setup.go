@@ -14,29 +14,29 @@ import (
 
 	dbm "github.com/cometbft/cometbft-db"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	"github.com/cometbft/cometbft/blocksync"
-	cfg "github.com/cometbft/cometbft/config"
-	cs "github.com/cometbft/cometbft/consensus"
-	"github.com/cometbft/cometbft/crypto"
-	"github.com/cometbft/cometbft/crypto/tmhash"
-	"github.com/cometbft/cometbft/evidence"
-	"github.com/cometbft/cometbft/statesync"
+	abci "github.com/zeu5/cometbft/abci/types"
+	"github.com/zeu5/cometbft/blocksync"
+	cfg "github.com/zeu5/cometbft/config"
+	cs "github.com/zeu5/cometbft/consensus"
+	"github.com/zeu5/cometbft/crypto"
+	"github.com/zeu5/cometbft/crypto/tmhash"
+	"github.com/zeu5/cometbft/evidence"
+	"github.com/zeu5/cometbft/statesync"
 
-	"github.com/cometbft/cometbft/libs/log"
-	"github.com/cometbft/cometbft/light"
-	mempl "github.com/cometbft/cometbft/mempool"
-	"github.com/cometbft/cometbft/p2p"
-	"github.com/cometbft/cometbft/p2p/pex"
-	"github.com/cometbft/cometbft/privval"
-	"github.com/cometbft/cometbft/proxy"
-	sm "github.com/cometbft/cometbft/state"
-	"github.com/cometbft/cometbft/state/indexer"
-	"github.com/cometbft/cometbft/state/indexer/block"
-	"github.com/cometbft/cometbft/state/txindex"
-	"github.com/cometbft/cometbft/store"
-	"github.com/cometbft/cometbft/types"
-	"github.com/cometbft/cometbft/version"
+	"github.com/zeu5/cometbft/libs/log"
+	"github.com/zeu5/cometbft/light"
+	mempl "github.com/zeu5/cometbft/mempool"
+	"github.com/zeu5/cometbft/p2p"
+	"github.com/zeu5/cometbft/p2p/pex"
+	"github.com/zeu5/cometbft/privval"
+	"github.com/zeu5/cometbft/proxy"
+	sm "github.com/zeu5/cometbft/state"
+	"github.com/zeu5/cometbft/state/indexer"
+	"github.com/zeu5/cometbft/state/indexer/block"
+	"github.com/zeu5/cometbft/state/txindex"
+	"github.com/zeu5/cometbft/store"
+	"github.com/zeu5/cometbft/types"
+	"github.com/zeu5/cometbft/version"
 
 	_ "github.com/lib/pq" // provide the psql db driver
 )
@@ -61,7 +61,7 @@ func DefaultGenesisDocProviderFunc(config *cfg.Config) GenesisDocProvider {
 	return func() (ChecksummedGenesisDoc, error) {
 		// FIXME: find a way to stream the file incrementally,
 		// for the JSON	parser and the checksum computation.
-		// https://github.com/cometbft/cometbft/issues/1302
+		// https://github.com/zeu5/cometbft/issues/1302
 		jsonBlob, err := os.ReadFile(config.GenesisFile())
 		if err != nil {
 			return ChecksummedGenesisDoc{}, fmt.Errorf("couldn't read GenesisDoc file: %w", err)

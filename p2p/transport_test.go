@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cometbft/cometbft/crypto/ed25519"
-	"github.com/cometbft/cometbft/libs/protoio"
-	"github.com/cometbft/cometbft/p2p/conn"
-	tmp2p "github.com/cometbft/cometbft/proto/tendermint/p2p"
+	"github.com/zeu5/cometbft/crypto/ed25519"
+	"github.com/zeu5/cometbft/libs/protoio"
+	"github.com/zeu5/cometbft/p2p/conn"
+	tmp2p "github.com/zeu5/cometbft/proto/tendermint/p2p"
 )
 
 var defaultNodeName = "host_peer"

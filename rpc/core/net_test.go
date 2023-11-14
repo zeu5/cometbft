@@ -6,10 +6,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	cfg "github.com/cometbft/cometbft/config"
-	"github.com/cometbft/cometbft/libs/log"
-	"github.com/cometbft/cometbft/p2p"
-	rpctypes "github.com/cometbft/cometbft/rpc/jsonrpc/types"
+	cfg "github.com/zeu5/cometbft/config"
+	"github.com/zeu5/cometbft/libs/log"
+	"github.com/zeu5/cometbft/p2p"
+	rpctypes "github.com/zeu5/cometbft/rpc/jsonrpc/types"
 )
 
 func TestUnsafeDialSeeds(t *testing.T) {

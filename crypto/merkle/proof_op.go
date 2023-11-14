@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	cmtcrypto "github.com/cometbft/cometbft/proto/tendermint/crypto"
+	cmtcrypto "github.com/zeu5/cometbft/proto/tendermint/crypto"
 )
 
 var ErrKeyPathNotConsumed = errors.New("merkle: keypath not consumed")

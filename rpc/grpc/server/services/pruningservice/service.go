@@ -8,10 +8,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cometbft/cometbft/internal/rpctrace"
-	"github.com/cometbft/cometbft/libs/log"
-	v1 "github.com/cometbft/cometbft/proto/tendermint/services/pruning/v1"
-	sm "github.com/cometbft/cometbft/state"
+	"github.com/zeu5/cometbft/internal/rpctrace"
+	"github.com/zeu5/cometbft/libs/log"
+	v1 "github.com/zeu5/cometbft/proto/tendermint/services/pruning/v1"
+	sm "github.com/zeu5/cometbft/state"
 )
 
 type pruningServiceServer struct {

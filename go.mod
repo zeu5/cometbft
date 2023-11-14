@@ -1,4 +1,4 @@
-module github.com/cometbft/cometbft
+module github.com/zeu5/cometbft
 
 go 1.21
 

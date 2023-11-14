@@ -11,16 +11,16 @@ import (
 
 	dbm "github.com/cometbft/cometbft-db"
 
-	"github.com/cometbft/cometbft/evidence"
-	"github.com/cometbft/cometbft/evidence/mocks"
-	"github.com/cometbft/cometbft/internal/test"
-	"github.com/cometbft/cometbft/libs/log"
-	cmtversion "github.com/cometbft/cometbft/proto/tendermint/version"
-	sm "github.com/cometbft/cometbft/state"
-	smmocks "github.com/cometbft/cometbft/state/mocks"
-	"github.com/cometbft/cometbft/store"
-	"github.com/cometbft/cometbft/types"
-	"github.com/cometbft/cometbft/version"
+	"github.com/zeu5/cometbft/evidence"
+	"github.com/zeu5/cometbft/evidence/mocks"
+	"github.com/zeu5/cometbft/internal/test"
+	"github.com/zeu5/cometbft/libs/log"
+	cmtversion "github.com/zeu5/cometbft/proto/tendermint/version"
+	sm "github.com/zeu5/cometbft/state"
+	smmocks "github.com/zeu5/cometbft/state/mocks"
+	"github.com/zeu5/cometbft/store"
+	"github.com/zeu5/cometbft/types"
+	"github.com/zeu5/cometbft/version"
 )
 
 func TestMain(m *testing.M) {

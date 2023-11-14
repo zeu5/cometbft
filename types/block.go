@@ -10,16 +10,16 @@ import (
 	"github.com/cosmos/gogoproto/proto"
 	gogotypes "github.com/cosmos/gogoproto/types"
 
-	"github.com/cometbft/cometbft/crypto"
-	"github.com/cometbft/cometbft/crypto/merkle"
-	"github.com/cometbft/cometbft/crypto/tmhash"
-	"github.com/cometbft/cometbft/libs/bits"
-	cmtbytes "github.com/cometbft/cometbft/libs/bytes"
-	cmtmath "github.com/cometbft/cometbft/libs/math"
-	cmtsync "github.com/cometbft/cometbft/libs/sync"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	cmtversion "github.com/cometbft/cometbft/proto/tendermint/version"
-	"github.com/cometbft/cometbft/version"
+	"github.com/zeu5/cometbft/crypto"
+	"github.com/zeu5/cometbft/crypto/merkle"
+	"github.com/zeu5/cometbft/crypto/tmhash"
+	"github.com/zeu5/cometbft/libs/bits"
+	cmtbytes "github.com/zeu5/cometbft/libs/bytes"
+	cmtmath "github.com/zeu5/cometbft/libs/math"
+	cmtsync "github.com/zeu5/cometbft/libs/sync"
+	cmtproto "github.com/zeu5/cometbft/proto/tendermint/types"
+	cmtversion "github.com/zeu5/cometbft/proto/tendermint/version"
+	"github.com/zeu5/cometbft/version"
 )
 
 const (
@@ -320,7 +320,7 @@ func MaxDataBytesNoEvidence(maxBytes int64, valsCount int) int64 {
 // NOTE: changes to the Header should be duplicated in:
 // - header.Hash()
 // - abci.Header
-// - https://github.com/cometbft/cometbft/blob/main/spec/blockchain/blockchain.md
+// - https://github.com/zeu5/cometbft/blob/main/spec/blockchain/blockchain.md
 type Header struct {
 	// basic block info
 	Version cmtversion.Consensus `json:"version"`

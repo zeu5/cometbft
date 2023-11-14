@@ -14,21 +14,21 @@ import (
 
 	dbm "github.com/cometbft/cometbft-db"
 
-	abcicli "github.com/cometbft/cometbft/abci/client"
-	abci "github.com/cometbft/cometbft/abci/types"
-	"github.com/cometbft/cometbft/evidence"
-	"github.com/cometbft/cometbft/libs/log"
-	"github.com/cometbft/cometbft/libs/service"
-	cmtsync "github.com/cometbft/cometbft/libs/sync"
-	mempl "github.com/cometbft/cometbft/mempool"
-	"github.com/cometbft/cometbft/proxy"
+	abcicli "github.com/zeu5/cometbft/abci/client"
+	abci "github.com/zeu5/cometbft/abci/types"
+	"github.com/zeu5/cometbft/evidence"
+	"github.com/zeu5/cometbft/libs/log"
+	"github.com/zeu5/cometbft/libs/service"
+	cmtsync "github.com/zeu5/cometbft/libs/sync"
+	mempl "github.com/zeu5/cometbft/mempool"
+	"github.com/zeu5/cometbft/proxy"
 
-	"github.com/cometbft/cometbft/p2p"
-	cmtcons "github.com/cometbft/cometbft/proto/tendermint/consensus"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	sm "github.com/cometbft/cometbft/state"
-	"github.com/cometbft/cometbft/store"
-	"github.com/cometbft/cometbft/types"
+	"github.com/zeu5/cometbft/p2p"
+	cmtcons "github.com/zeu5/cometbft/proto/tendermint/consensus"
+	cmtproto "github.com/zeu5/cometbft/proto/tendermint/types"
+	sm "github.com/zeu5/cometbft/state"
+	"github.com/zeu5/cometbft/store"
+	"github.com/zeu5/cometbft/types"
 )
 
 //----------------------------------------------

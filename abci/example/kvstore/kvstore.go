@@ -12,11 +12,11 @@ import (
 
 	dbm "github.com/cometbft/cometbft-db"
 
-	"github.com/cometbft/cometbft/abci/types"
-	cryptoencoding "github.com/cometbft/cometbft/crypto/encoding"
-	"github.com/cometbft/cometbft/libs/log"
-	cryptoproto "github.com/cometbft/cometbft/proto/tendermint/crypto"
-	"github.com/cometbft/cometbft/version"
+	"github.com/zeu5/cometbft/abci/types"
+	cryptoencoding "github.com/zeu5/cometbft/crypto/encoding"
+	"github.com/zeu5/cometbft/libs/log"
+	cryptoproto "github.com/zeu5/cometbft/proto/tendermint/crypto"
+	"github.com/zeu5/cometbft/version"
 )
 
 var (

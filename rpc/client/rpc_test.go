@@ -14,17 +14,17 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	cmtjson "github.com/cometbft/cometbft/libs/json"
-	"github.com/cometbft/cometbft/libs/log"
-	cmtmath "github.com/cometbft/cometbft/libs/math"
-	"github.com/cometbft/cometbft/rpc/client"
-	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
-	rpclocal "github.com/cometbft/cometbft/rpc/client/local"
-	ctypes "github.com/cometbft/cometbft/rpc/core/types"
-	rpcclient "github.com/cometbft/cometbft/rpc/jsonrpc/client"
-	rpctest "github.com/cometbft/cometbft/rpc/test"
-	"github.com/cometbft/cometbft/types"
+	abci "github.com/zeu5/cometbft/abci/types"
+	cmtjson "github.com/zeu5/cometbft/libs/json"
+	"github.com/zeu5/cometbft/libs/log"
+	cmtmath "github.com/zeu5/cometbft/libs/math"
+	"github.com/zeu5/cometbft/rpc/client"
+	rpchttp "github.com/zeu5/cometbft/rpc/client/http"
+	rpclocal "github.com/zeu5/cometbft/rpc/client/local"
+	ctypes "github.com/zeu5/cometbft/rpc/core/types"
+	rpcclient "github.com/zeu5/cometbft/rpc/jsonrpc/client"
+	rpctest "github.com/zeu5/cometbft/rpc/test"
+	"github.com/zeu5/cometbft/types"
 )
 
 var ctx = context.Background()

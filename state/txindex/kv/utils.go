@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"math/big"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	idxutil "github.com/cometbft/cometbft/internal/indexer"
-	cmtsyntax "github.com/cometbft/cometbft/libs/pubsub/query/syntax"
-	"github.com/cometbft/cometbft/state/indexer"
-	"github.com/cometbft/cometbft/types"
 	"github.com/google/orderedcode"
+	abci "github.com/zeu5/cometbft/abci/types"
+	idxutil "github.com/zeu5/cometbft/internal/indexer"
+	cmtsyntax "github.com/zeu5/cometbft/libs/pubsub/query/syntax"
+	"github.com/zeu5/cometbft/state/indexer"
+	"github.com/zeu5/cometbft/types"
 )
 
 type HeightInfo struct {

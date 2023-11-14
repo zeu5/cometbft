@@ -5,12 +5,12 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/cometbft/cometbft/libs/log"
-	"github.com/cometbft/cometbft/p2p"
-	bcproto "github.com/cometbft/cometbft/proto/tendermint/blocksync"
-	sm "github.com/cometbft/cometbft/state"
-	"github.com/cometbft/cometbft/store"
-	"github.com/cometbft/cometbft/types"
+	"github.com/zeu5/cometbft/libs/log"
+	"github.com/zeu5/cometbft/p2p"
+	bcproto "github.com/zeu5/cometbft/proto/tendermint/blocksync"
+	sm "github.com/zeu5/cometbft/state"
+	"github.com/zeu5/cometbft/store"
+	"github.com/zeu5/cometbft/types"
 )
 
 const (

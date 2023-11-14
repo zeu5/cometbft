@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/cometbft/cometbft/crypto"
-	"github.com/cometbft/cometbft/types"
+	"github.com/zeu5/cometbft/crypto"
+	"github.com/zeu5/cometbft/types"
 )
 
 //-----------------------------------------------------

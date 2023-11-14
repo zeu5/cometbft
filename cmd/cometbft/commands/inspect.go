@@ -8,12 +8,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	cfg "github.com/cometbft/cometbft/config"
-	"github.com/cometbft/cometbft/inspect"
-	"github.com/cometbft/cometbft/state"
-	"github.com/cometbft/cometbft/state/indexer/block"
-	"github.com/cometbft/cometbft/store"
-	"github.com/cometbft/cometbft/types"
+	cfg "github.com/zeu5/cometbft/config"
+	"github.com/zeu5/cometbft/inspect"
+	"github.com/zeu5/cometbft/state"
+	"github.com/zeu5/cometbft/state/indexer/block"
+	"github.com/zeu5/cometbft/store"
+	"github.com/zeu5/cometbft/types"
 )
 
 // InspectCmd is the command for starting an inspect server.

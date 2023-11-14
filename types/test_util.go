@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	cmtversion "github.com/cometbft/cometbft/proto/tendermint/version"
-	"github.com/cometbft/cometbft/version"
+	cmtproto "github.com/zeu5/cometbft/proto/tendermint/types"
+	cmtversion "github.com/zeu5/cometbft/proto/tendermint/version"
+	"github.com/zeu5/cometbft/version"
 )
 
 func MakeExtCommit(blockID BlockID, height int64, round int32,

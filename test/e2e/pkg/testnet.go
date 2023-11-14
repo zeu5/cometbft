@@ -15,12 +15,12 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/cometbft/cometbft/crypto"
-	"github.com/cometbft/cometbft/crypto/ed25519"
-	"github.com/cometbft/cometbft/crypto/secp256k1"
-	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
-	grpcclient "github.com/cometbft/cometbft/rpc/grpc/client"
-	grpcprivileged "github.com/cometbft/cometbft/rpc/grpc/client/privileged"
+	"github.com/zeu5/cometbft/crypto"
+	"github.com/zeu5/cometbft/crypto/ed25519"
+	"github.com/zeu5/cometbft/crypto/secp256k1"
+	rpchttp "github.com/zeu5/cometbft/rpc/client/http"
+	grpcclient "github.com/zeu5/cometbft/rpc/grpc/client"
+	grpcprivileged "github.com/zeu5/cometbft/rpc/grpc/client/privileged"
 
 	_ "embed"
 )

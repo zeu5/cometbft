@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
-	"github.com/cometbft/cometbft/test/e2e/app"
-	cmterrors "github.com/cometbft/cometbft/types/errors"
+	"github.com/zeu5/cometbft/test/e2e/app"
+	cmterrors "github.com/zeu5/cometbft/types/errors"
 )
 
 // Config is the application configuration.

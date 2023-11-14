@@ -3,7 +3,7 @@ package p2p
 import (
 	"net/http"
 
-	"github.com/cometbft/cometbft/p2p/conn"
+	"github.com/zeu5/cometbft/p2p/conn"
 )
 
 type InterceptNetworkClient struct {

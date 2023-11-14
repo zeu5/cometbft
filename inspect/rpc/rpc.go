@@ -7,13 +7,13 @@ import (
 
 	"github.com/rs/cors"
 
-	"github.com/cometbft/cometbft/config"
-	"github.com/cometbft/cometbft/libs/log"
-	"github.com/cometbft/cometbft/rpc/core"
-	"github.com/cometbft/cometbft/rpc/jsonrpc/server"
-	"github.com/cometbft/cometbft/state"
-	"github.com/cometbft/cometbft/state/indexer"
-	"github.com/cometbft/cometbft/state/txindex"
+	"github.com/zeu5/cometbft/config"
+	"github.com/zeu5/cometbft/libs/log"
+	"github.com/zeu5/cometbft/rpc/core"
+	"github.com/zeu5/cometbft/rpc/jsonrpc/server"
+	"github.com/zeu5/cometbft/state"
+	"github.com/zeu5/cometbft/state/indexer"
+	"github.com/zeu5/cometbft/state/txindex"
 )
 
 // Server defines parameters for running an Inspector rpc server.

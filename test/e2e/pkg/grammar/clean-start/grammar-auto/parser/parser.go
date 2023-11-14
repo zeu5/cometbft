@@ -7,11 +7,11 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/cometbft/cometbft/test/e2e/pkg/grammar/clean-start/grammar-auto/lexer"
-	"github.com/cometbft/cometbft/test/e2e/pkg/grammar/clean-start/grammar-auto/parser/bsr"
-	"github.com/cometbft/cometbft/test/e2e/pkg/grammar/clean-start/grammar-auto/parser/slot"
-	"github.com/cometbft/cometbft/test/e2e/pkg/grammar/clean-start/grammar-auto/parser/symbols"
-	"github.com/cometbft/cometbft/test/e2e/pkg/grammar/clean-start/grammar-auto/token"
+	"github.com/zeu5/cometbft/test/e2e/pkg/grammar/clean-start/grammar-auto/lexer"
+	"github.com/zeu5/cometbft/test/e2e/pkg/grammar/clean-start/grammar-auto/parser/bsr"
+	"github.com/zeu5/cometbft/test/e2e/pkg/grammar/clean-start/grammar-auto/parser/slot"
+	"github.com/zeu5/cometbft/test/e2e/pkg/grammar/clean-start/grammar-auto/parser/symbols"
+	"github.com/zeu5/cometbft/test/e2e/pkg/grammar/clean-start/grammar-auto/token"
 )
 
 type parser struct {
