@@ -22,6 +22,7 @@ func main() {
 		cmd.ResetStateCmd,
 		cmd.ShowValidatorCmd,
 		cmd.TestnetFilesCmd,
+		cmd.ITestnetFilesCmd,
 		cmd.ShowNodeIDCmd,
 		cmd.GenNodeKeyCmd,
 		cmd.VersionCmd,
@@ -30,6 +31,7 @@ func main() {
 		cmd.InspectCmd,
 		debug.DebugCmd,
 		cli.NewCompletionCmd(rootCmd, true),
+		cmd.NewInterceptRunNodeCmd(),
 	)
 
 	// NOTE:
@@ -40,7 +42,7 @@ func main() {
 	//	* Provide their own DB implementation
 	// can copy this file and use something other than the
 	// DefaultNewNode function
-	nodeFunc := nm.InterceptNode
+	nodeFunc := nm.DefaultNewNode
 
 	// Create & start node
 	rootCmd.AddCommand(cmd.NewRunNodeCmd(nodeFunc))

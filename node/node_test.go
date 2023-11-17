@@ -30,8 +30,6 @@ import (
 	cmtrand "github.com/zeu5/cometbft/libs/rand"
 	mempl "github.com/zeu5/cometbft/mempool"
 	"github.com/zeu5/cometbft/p2p"
-	"github.com/zeu5/cometbft/p2p/conn"
-	p2pmock "github.com/zeu5/cometbft/p2p/mock"
 	"github.com/zeu5/cometbft/privval"
 	"github.com/zeu5/cometbft/proxy"
 	sm "github.com/zeu5/cometbft/state"
@@ -439,51 +437,51 @@ func TestMaxProposalBlockSize(t *testing.T) {
 	assert.EqualValues(t, partSet.ByteSize(), int64(pb.Size()))
 }
 
-func TestNodeNewNodeCustomReactors(t *testing.T) {
-	config := test.ResetTestRoot("node_new_node_custom_reactors_test")
-	defer os.RemoveAll(config.RootDir)
+// func TestNodeNewNodeCustomReactors(t *testing.T) {
+// 	config := test.ResetTestRoot("node_new_node_custom_reactors_test")
+// 	defer os.RemoveAll(config.RootDir)
 
-	cr := p2pmock.NewReactor()
-	cr.Channels = []*conn.ChannelDescriptor{
-		{
-			ID:                  byte(0x31),
-			Priority:            5,
-			SendQueueCapacity:   100,
-			RecvMessageCapacity: 100,
-		},
-	}
-	customBlocksyncReactor := p2pmock.NewReactor()
+// 	cr := p2pmock.NewReactor()
+// 	cr.Channels = []*conn.ChannelDescriptor{
+// 		{
+// 			ID:                  byte(0x31),
+// 			Priority:            5,
+// 			SendQueueCapacity:   100,
+// 			RecvMessageCapacity: 100,
+// 		},
+// 	}
+// 	customBlocksyncReactor := p2pmock.NewReactor()
 
-	nodeKey, err := p2p.LoadOrGenNodeKey(config.NodeKeyFile())
-	require.NoError(t, err)
+// 	nodeKey, err := p2p.LoadOrGenNodeKey(config.NodeKeyFile())
+// 	require.NoError(t, err)
 
-	n, err := NewNode(context.Background(),
-		config,
-		privval.LoadOrGenFilePV(config.PrivValidatorKeyFile(), config.PrivValidatorStateFile()),
-		nodeKey,
-		proxy.DefaultClientCreator(config.ProxyApp, config.ABCI, config.DBDir()),
-		DefaultGenesisDocProviderFunc(config),
-		cfg.DefaultDBProvider,
-		DefaultMetricsProvider(config.Instrumentation),
-		log.TestingLogger(),
-		CustomReactors(map[string]p2p.Reactor{"FOO": cr, "BLOCKSYNC": customBlocksyncReactor}),
-	)
-	require.NoError(t, err)
+// 	n, err := NewNode(context.Background(),
+// 		config,
+// 		privval.LoadOrGenFilePV(config.PrivValidatorKeyFile(), config.PrivValidatorStateFile()),
+// 		nodeKey,
+// 		proxy.DefaultClientCreator(config.ProxyApp, config.ABCI, config.DBDir()),
+// 		DefaultGenesisDocProviderFunc(config),
+// 		cfg.DefaultDBProvider,
+// 		DefaultMetricsProvider(config.Instrumentation),
+// 		log.TestingLogger(),
+// 		CustomReactors(map[string]p2p.Reactor{"FOO": cr, "BLOCKSYNC": customBlocksyncReactor}),
+// 	)
+// 	require.NoError(t, err)
 
-	err = n.Start()
-	require.NoError(t, err)
-	defer n.Stop() //nolint:errcheck // ignore for tests
+// 	err = n.Start()
+// 	require.NoError(t, err)
+// 	defer n.Stop() //nolint:errcheck // ignore for tests
 
-	assert.True(t, cr.IsRunning())
-	assert.Equal(t, cr, n.Switch().Reactor("FOO"))
+// 	assert.True(t, cr.IsRunning())
+// 	assert.Equal(t, cr, n.Switch().Reactor("FOO"))
 
-	assert.True(t, customBlocksyncReactor.IsRunning())
-	assert.Equal(t, customBlocksyncReactor, n.Switch().Reactor("BLOCKSYNC"))
+// 	assert.True(t, customBlocksyncReactor.IsRunning())
+// 	assert.Equal(t, customBlocksyncReactor, n.Switch().Reactor("BLOCKSYNC"))
 
-	channels := n.NodeInfo().(p2p.DefaultNodeInfo).Channels
-	assert.Contains(t, channels, mempl.MempoolChannel)
-	assert.Contains(t, channels, cr.Channels[0].ID)
-}
+// 	channels := n.NodeInfo().(p2p.DefaultNodeInfo).Channels
+// 	assert.Contains(t, channels, mempl.MempoolChannel)
+// 	assert.Contains(t, channels, cr.Channels[0].ID)
+// }
 
 // Simple test to confirm that an existing genesis file will be deleted from the DB
 // TODO Confirm that the deletion of a very big file does not crash the machine

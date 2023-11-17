@@ -375,6 +375,15 @@ allow_duplicate_ip = {{ .P2P.AllowDuplicateIP }}
 handshake_timeout = "{{ .P2P.HandshakeTimeout }}"
 dial_timeout = "{{ .P2P.DialTimeout }}"
 
+# Test network configuration
+test_intercept = {{ .P2P.TestIntercept }}
+
+[p2p.test_intercept_config]
+intercept_listen_addr = "{{ .P2P.TestInterceptConfig.ListenAddr }}"
+intercept_server_addr = "{{ .P2P.TestInterceptConfig.ServerAddr }}"
+intercept_id = {{ .P2P.TestInterceptConfig.ID }}
+
+
 #######################################################
 ###          Mempool Configuration Options          ###
 #######################################################

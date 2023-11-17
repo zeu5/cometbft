@@ -814,12 +814,14 @@ func (cfg *P2PConfig) ValidateBasic() error {
 type InterceptConfig struct {
 	ListenAddr string `mapstructure:"intercept_listen_addr"`
 	ServerAddr string `mapstructure:"intercept_server_addr"`
+	ID         int    `mapstructure:"intercept_id"`
 }
 
 func DefaultInterceptConfig() *InterceptConfig {
 	return &InterceptConfig{
 		ListenAddr: "",
 		ServerAddr: "",
+		ID:         0,
 	}
 }
 

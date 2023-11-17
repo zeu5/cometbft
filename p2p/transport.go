@@ -73,11 +73,16 @@ type Transport interface {
 	Cleanup(Peer)
 }
 
-// transportLifecycle bundles the methods for callers to control start and stop
+// TransportLifecycle bundles the methods for callers to control start and stop
 // behavior.
-type transportLifecycle interface {
+type TransportLifecycle interface {
 	Close() error
 	Listen(NetAddress) error
+}
+
+type TransportWithLifeCycle interface {
+	Transport
+	TransportLifecycle
 }
 
 // ConnFilterFunc to be implemented by filter hooks after a new connection has
@@ -163,7 +168,7 @@ type MultiplexTransport struct {
 
 // Test multiplexTransport for interface completeness.
 var _ Transport = (*MultiplexTransport)(nil)
-var _ transportLifecycle = (*MultiplexTransport)(nil)
+var _ TransportLifecycle = (*MultiplexTransport)(nil)
 
 // NewMultiplexTransport returns a tcp connected multiplexed peer.
 func NewMultiplexTransport(

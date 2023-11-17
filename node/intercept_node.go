@@ -3,17 +3,23 @@ package node
 import (
 	"context"
 	"fmt"
+	"net"
 
+	"github.com/cosmos/gogoproto/proto"
+	abci "github.com/zeu5/cometbft/abci/types"
 	cfg "github.com/zeu5/cometbft/config"
 	"github.com/zeu5/cometbft/libs/log"
 	"github.com/zeu5/cometbft/libs/service"
 	"github.com/zeu5/cometbft/p2p"
 	"github.com/zeu5/cometbft/p2p/pex"
 	"github.com/zeu5/cometbft/privval"
+	cmtcons "github.com/zeu5/cometbft/proto/tendermint/consensus"
 	"github.com/zeu5/cometbft/proxy"
 	sm "github.com/zeu5/cometbft/state"
 	"github.com/zeu5/cometbft/statesync"
 	"github.com/zeu5/cometbft/types"
+
+	ctypes "github.com/zeu5/cometbft/proto/tendermint/types"
 )
 
 func InterceptNode(config *cfg.Config, logger log.Logger) (*Node, error) {
@@ -213,7 +219,7 @@ func NewInterceptNode(ctx context.Context,
 	}
 
 	// Setup Transport.
-	transport, peerFilters := createTransport(config, nodeInfo, nodeKey, proxyApp)
+	transport, peerFilters := createInterceptTransport(config, nodeInfo, nodeKey, proxyApp, consensusReactor.GetChannels(), getConsensusMessageTypeFunc())
 
 	// Setup Switch.
 	p2pLogger := logger.With("module", "p2p")
@@ -294,4 +300,123 @@ func NewInterceptNode(ctx context.Context,
 	}
 
 	return node, nil
+}
+
+func createInterceptTransport(
+	config *cfg.Config,
+	nodeInfo p2p.NodeInfo,
+	nodeKey *p2p.NodeKey,
+	proxyApp proxy.AppConns,
+	filteredChannels []*p2p.ChannelDescriptor,
+	messageTypeFunc func(proto.Message) string,
+) (
+	*p2p.InterceptTransport,
+	[]p2p.PeerFilterFunc,
+) {
+	mConfig := p2p.MConnConfig(config.P2P)
+	iConfig := p2p.InterceptConfig{
+		ChannelIDs:      make(map[byte]bool),
+		ListenAddr:      config.P2P.TestInterceptConfig.ListenAddr,
+		ServerAddr:      config.P2P.TestInterceptConfig.ServerAddr,
+		ID:              config.P2P.TestInterceptConfig.ID,
+		MessageTypeFunc: messageTypeFunc,
+	}
+	connFilters := []p2p.ConnFilterFunc{}
+
+	for _, c := range filteredChannels {
+		iConfig.ChannelIDs[c.ID] = true
+	}
+
+	transport := p2p.NewInterceptTransport(nodeInfo, nodeKey, mConfig, iConfig)
+	peerFilters := []p2p.PeerFilterFunc{}
+
+	if !config.P2P.AllowDuplicateIP {
+		connFilters = append(connFilters, p2p.ConnDuplicateIPFilter())
+	}
+
+	// Filter peers by addr or pubkey with an ABCI query.
+	// If the query return code is OK, add peer.
+	if config.FilterPeers {
+		connFilters = append(
+			connFilters,
+			// ABCI query for address filtering.
+			func(_ p2p.ConnSet, c net.Conn, _ []net.IP) error {
+				res, err := proxyApp.Query().Query(context.TODO(), &abci.RequestQuery{
+					Path: fmt.Sprintf("/p2p/filter/addr/%s", c.RemoteAddr().String()),
+				})
+				if err != nil {
+					return err
+				}
+				if res.IsErr() {
+					return fmt.Errorf("error querying abci app: %v", res)
+				}
+
+				return nil
+			},
+		)
+
+		peerFilters = append(
+			peerFilters,
+			// ABCI query for ID filtering.
+			func(_ p2p.IPeerSet, p p2p.Peer) error {
+				res, err := proxyApp.Query().Query(context.TODO(), &abci.RequestQuery{
+					Path: fmt.Sprintf("/p2p/filter/id/%s", p.ID()),
+				})
+				if err != nil {
+					return err
+				}
+				if res.IsErr() {
+					return fmt.Errorf("error querying abci app: %v", res)
+				}
+
+				return nil
+			},
+		)
+	}
+
+	p2p.MultiplexTransportConnFilters(connFilters...)(transport.MultiplexTransport)
+
+	// Limit the number of incoming connections.
+	max := config.P2P.MaxNumInboundPeers + len(splitAndTrimEmpty(config.P2P.UnconditionalPeerIDs, ",", " "))
+	p2p.MultiplexTransportMaxIncomingConnections(max)(transport.MultiplexTransport)
+
+	return transport, peerFilters
+}
+
+func getConsensusMessageTypeFunc() func(proto.Message) string {
+	return func(msg proto.Message) string {
+		switch msg := msg.(type) {
+		case *cmtcons.NewRoundStep:
+			return "NewRoundStep"
+		case *cmtcons.NewValidBlock:
+			return "BlockPartSetHeader"
+		case *cmtcons.Proposal:
+			return "Proposal"
+		case *cmtcons.ProposalPOL:
+			return "ProposalPOL"
+		case *cmtcons.BlockPart:
+			return "BlockPart"
+		case *cmtcons.Vote:
+			switch msg.Vote.Type {
+			case ctypes.PrevoteType:
+				return "Prevote"
+			case ctypes.PrecommitType:
+				return "Precommit"
+			case ctypes.ProposalType:
+				return "Proposal"
+			default:
+				return "Vote"
+			}
+		case *cmtcons.HasVote:
+			return "HasVote"
+		case *cmtcons.HasProposalBlockPart:
+			return "HasProposalBlockPart"
+		case *cmtcons.VoteSetMaj23:
+			return "VoteSetMaj23"
+		case *cmtcons.VoteSetBits:
+			return "VoteSetBits"
+		default:
+		}
+		return ""
+	}
 }

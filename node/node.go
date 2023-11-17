@@ -55,7 +55,7 @@ type Node struct {
 	privValidator types.PrivValidator // local node's validator key
 
 	// network
-	transport   *p2p.MultiplexTransport
+	transport   p2p.TransportWithLifeCycle
 	sw          *p2p.Switch  // p2p connections
 	addrBook    pex.AddrBook // known peers
 	nodeInfo    p2p.NodeInfo
@@ -102,33 +102,33 @@ type Option func(*Node)
 //   - EVIDENCE
 //   - PEX
 //   - STATESYNC
-func CustomReactors(reactors map[string]p2p.Reactor) Option {
-	return func(n *Node) {
-		for name, reactor := range reactors {
-			if existingReactor := n.sw.Reactor(name); existingReactor != nil {
-				n.sw.Logger.Info("Replacing existing reactor with a custom one",
-					"name", name, "existing", existingReactor, "custom", reactor)
-				n.sw.RemoveReactor(name, existingReactor)
-			}
-			n.sw.AddReactor(name, reactor)
-			// register the new channels to the nodeInfo
-			// NOTE: This is a bit messy now with the type casting but is
-			// cleaned up in the following version when NodeInfo is changed from
-			// and interface to a concrete type
-			if ni, ok := n.nodeInfo.(p2p.DefaultNodeInfo); ok {
-				for _, chDesc := range reactor.GetChannels() {
-					if !ni.HasChannel(chDesc.ID) {
-						ni.Channels = append(ni.Channels, chDesc.ID)
-						n.transport.AddChannel(chDesc.ID)
-					}
-				}
-				n.nodeInfo = ni
-			} else {
-				n.Logger.Error("Node info is not of type DefaultNodeInfo. Custom reactor channels can not be added.")
-			}
-		}
-	}
-}
+// func CustomReactors(reactors map[string]p2p.Reactor) Option {
+// 	return func(n *Node) {
+// 		for name, reactor := range reactors {
+// 			if existingReactor := n.sw.Reactor(name); existingReactor != nil {
+// 				n.sw.Logger.Info("Replacing existing reactor with a custom one",
+// 					"name", name, "existing", existingReactor, "custom", reactor)
+// 				n.sw.RemoveReactor(name, existingReactor)
+// 			}
+// 			n.sw.AddReactor(name, reactor)
+// 			// register the new channels to the nodeInfo
+// 			// NOTE: This is a bit messy now with the type casting but is
+// 			// cleaned up in the following version when NodeInfo is changed from
+// 			// and interface to a concrete type
+// 			if ni, ok := n.nodeInfo.(p2p.DefaultNodeInfo); ok {
+// 				for _, chDesc := range reactor.GetChannels() {
+// 					if !ni.HasChannel(chDesc.ID) {
+// 						ni.Channels = append(ni.Channels, chDesc.ID)
+// 						n.transport.AddChannel(chDesc.ID)
+// 					}
+// 				}
+// 				n.nodeInfo = ni
+// 			} else {
+// 				n.Logger.Error("Node info is not of type DefaultNodeInfo. Custom reactor channels can not be added.")
+// 			}
+// 		}
+// 	}
+// }
 
 // StateProvider overrides the state provider used by state sync to retrieve trusted app hashes and
 // build a State object for bootstrapping the node.

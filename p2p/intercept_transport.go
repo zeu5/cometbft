@@ -1,34 +1,240 @@
 package p2p
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net"
 	"net/http"
+	"reflect"
+	"sync"
+	"time"
 
+	"github.com/cosmos/gogoproto/proto"
+	"github.com/gin-gonic/gin"
 	"github.com/zeu5/cometbft/p2p/conn"
 )
 
-type InterceptNetworkClient struct {
-	Addr   string
+type interceptNetworkClient struct {
+	ID         int
+	Addr       string
+	ServerAddr string
+	ctr        map[string]int
+	ctrLock    *sync.Mutex
+	nodeKey    *NodeKey
+
+	receivedMessages []*interceptedMessage
+	lock             *sync.Mutex
+
 	server *http.Server
 }
 
+func newInterceptNetworkClient(id int, listenAddr string, serverAddr string, nodeKey *NodeKey) *interceptNetworkClient {
+
+	i := &interceptNetworkClient{
+		ID:               id,
+		Addr:             listenAddr,
+		ServerAddr:       serverAddr,
+		ctr:              make(map[string]int),
+		ctrLock:          new(sync.Mutex),
+		nodeKey:          nodeKey,
+		receivedMessages: make([]*interceptedMessage, 0),
+		lock:             new(sync.Mutex),
+
+		server: nil,
+	}
+
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.New()
+	r.POST("/message", i.handleMessage)
+
+	i.server = &http.Server{
+		Addr:    listenAddr,
+		Handler: r,
+	}
+
+	return i
+}
+
+func (i *interceptNetworkClient) nextID(from, to string) string {
+	key := from + "_" + to
+
+	i.ctrLock.Lock()
+	_, ok := i.ctr[key]
+	if !ok {
+		i.ctr[key] = 0
+	}
+	ctr := i.ctr[key]
+	i.ctr[key] = ctr + 1
+	i.ctrLock.Unlock()
+
+	return fmt.Sprintf("%s_%d", key, ctr)
+}
+
+func (i *interceptNetworkClient) handleMessage(ctx *gin.Context) {
+	m := &interceptedMessage{}
+	if err := ctx.ShouldBindJSON(&m); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "failed to unmarshal request"})
+		return
+	}
+
+	fmt.Println("Received message of type: " + m.Type)
+
+	m.we = &wrappedEnvelope{}
+	if err := json.Unmarshal(m.Data, m.we); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "failed to unmarshal request"})
+		return
+	}
+
+	i.lock.Lock()
+	i.receivedMessages = append(i.receivedMessages, m)
+	i.lock.Unlock()
+	ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
+}
+
+func (i *interceptNetworkClient) Start() error {
+	go func() {
+		i.server.ListenAndServe()
+	}()
+
+	client := &http.Client{
+		Transport: &http.Transport{
+			DialContext: (&net.Dialer{
+				Timeout:   5 * time.Second,
+				KeepAlive: 5 * time.Second,
+			}).DialContext,
+			TLSHandshakeTimeout:   5 * time.Second,
+			ResponseHeaderTimeout: 5 * time.Second,
+			ExpectContinueTimeout: 1 * time.Second,
+			DisableKeepAlives:     true,
+		},
+	}
+
+	replica := map[string]interface{}{
+		"id":    i.ID,
+		"alias": i.nodeKey.ID(),
+		"addr":  i.Addr,
+		"keys": map[string]interface{}{
+			"public":  i.nodeKey.PubKey(),
+			"private": i.nodeKey.PrivKey,
+		},
+	}
+	bs, err := json.Marshal(replica)
+	if err != nil {
+		return err
+	}
+
+	resp, err := client.Post("http://"+i.ServerAddr+"/replica", "application/json", bytes.NewBuffer(bs))
+	if err == nil {
+		io.ReadAll(resp.Body)
+		resp.Body.Close()
+	}
+	return err
+}
+
+func (i *interceptNetworkClient) Stop() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	return i.server.Shutdown(ctx)
+}
+
+func (i *interceptNetworkClient) getMessages() []*interceptedMessage {
+	i.lock.Lock()
+	out := make([]*interceptedMessage, len(i.receivedMessages))
+	copy(out, i.receivedMessages)
+	i.receivedMessages = make([]*interceptedMessage, 0)
+	i.lock.Unlock()
+	return out
+}
+
+func (i *interceptNetworkClient) sendMessage(msg *interceptedMessage) error {
+	client := &http.Client{
+		Transport: &http.Transport{
+			DialContext: (&net.Dialer{
+				Timeout:   5 * time.Second,
+				KeepAlive: 5 * time.Second,
+			}).DialContext,
+			TLSHandshakeTimeout:   5 * time.Second,
+			ResponseHeaderTimeout: 5 * time.Second,
+			ExpectContinueTimeout: 1 * time.Second,
+			DisableKeepAlives:     true,
+		},
+	}
+	msg.ID = i.nextID(msg.From, msg.To)
+
+	bs, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	resp, err := client.Post("http://"+i.ServerAddr+"/message", "application/json", bytes.NewBuffer(bs))
+	if err == nil {
+		io.ReadAll(resp.Body)
+		resp.Body.Close()
+	}
+	return err
+}
+
+type interceptedMessage struct {
+	From string
+	To   string
+	Data []byte
+	Type string
+	ID   string
+
+	we *wrappedEnvelope `json:"-"`
+}
+
+type wrappedEnvelope struct {
+	ChID byte
+	Msg  []byte
+}
+
 type InterceptConfig struct {
-	ChannelIDs map[byte]bool
+	ChannelIDs      map[byte]bool
+	MessageTypeFunc func(proto.Message) string
+	ListenAddr      string
+	ServerAddr      string
+	ID              int
 }
 
 type InterceptTransport struct {
 	*MultiplexTransport
+	Alias   string
 	cfg     InterceptConfig
-	iClient *InterceptNetworkClient
+	iClient *interceptNetworkClient
 	peers   map[string]*InterceptPeer
+
+	doneCh chan struct{}
 }
 
-func NewInterceptTransport(nodeInfo NodeInfo, nodeKey NodeKey, mConfig conn.MConnConfig, iConfig InterceptConfig) *InterceptTransport {
+func NewInterceptTransport(nodeInfo NodeInfo, nodeKey *NodeKey, mConfig conn.MConnConfig, iConfig InterceptConfig) *InterceptTransport {
 	return &InterceptTransport{
-		iClient:            nil,
+		iClient:            newInterceptNetworkClient(iConfig.ID, iConfig.ListenAddr, iConfig.ServerAddr, nodeKey),
+		Alias:              string(nodeInfo.ID()),
 		cfg:                iConfig,
-		MultiplexTransport: NewMultiplexTransport(nodeInfo, nodeKey, mConfig),
+		MultiplexTransport: NewMultiplexTransport(nodeInfo, *nodeKey, mConfig),
 		peers:              make(map[string]*InterceptPeer),
+		doneCh:             make(chan struct{}),
 	}
+}
+
+func (i *InterceptTransport) Close() error {
+	err := i.MultiplexTransport.Close()
+	i.iClient.Stop()
+	close(i.doneCh)
+	return err
+}
+
+func (i *InterceptTransport) Listen(addr NetAddress) error {
+	err := i.iClient.Start()
+	if err != nil {
+		return err
+	}
+	go i.receiveMessage()
+	return i.MultiplexTransport.Listen(addr)
 }
 
 func (i *InterceptTransport) Accept(pConfig peerConfig) (Peer, error) {
@@ -43,7 +249,7 @@ func (i *InterceptTransport) Accept(pConfig peerConfig) (Peer, error) {
 		iTransport: i,
 		peer:       peer,
 	}
-	i.peers[peer.String()] = out
+	i.peers[string(peer.ID())] = out
 	return out, nil
 }
 
@@ -58,35 +264,105 @@ func (i *InterceptTransport) Dial(addr NetAddress, pConfig peerConfig) (Peer, er
 		cfg:        pConfig,
 		iTransport: i,
 		peer:       peer,
+		id:         string(peer.ID()),
 	}
-	i.peers[peer.String()] = out
+	i.peers[string(peer.ID())] = out
 	return out, nil
 }
 
-func (i *InterceptTransport) sendMessage(e Envelope) bool {
-	// TODO:
-	// 1. Check if the message should be intercepted or not
-	// 2. Send with client if so
+func (i *InterceptTransport) sendMessage(to string, e Envelope) bool {
+	select {
+	case <-i.doneCh:
+		return false
+	default:
+	}
+
+	if _, ok := i.cfg.ChannelIDs[e.ChannelID]; ok {
+		// TODO: convert envelop to message and send
+		msgBytes, err := proto.Marshal(e.Message)
+		if err != nil {
+			return false
+		}
+		we := &wrappedEnvelope{
+			ChID: e.ChannelID,
+			Msg:  msgBytes,
+		}
+		bs, err := json.Marshal(we)
+		if err != nil {
+			return false
+		}
+		msg := &interceptedMessage{
+			From: i.Alias,
+			To:   to,
+			Data: bs,
+			Type: i.cfg.MessageTypeFunc(e.Message),
+		}
+		i.iClient.sendMessage(msg)
+		return true
+	}
 	return false
 }
 
 func (i *InterceptTransport) receiveMessage() {
-	// TODO:
-	// 1. Need to poll the client for messages
-	// 2. Should be part of the transportLifecycle
+	for {
+		select {
+		case <-i.doneCh:
+			return
+		default:
+		}
+		messages := i.iClient.getMessages()
+		if len(messages) > 0 {
+			for _, m := range messages {
+				peer, ok := i.peers[m.To]
+				if ok {
+					peer.receive(m.we.ChID, m.we.Msg)
+				}
+			}
+		}
+		time.Sleep(1 * time.Microsecond)
+	}
 }
 
-var _ Transport = &InterceptTransport{}
-var _ transportLifecycle = &InterceptTransport{}
+var _ TransportWithLifeCycle = &InterceptTransport{}
 
 type InterceptPeer struct {
 	cfg        peerConfig
 	iTransport *InterceptTransport
+	id         string
 	*peer
 }
 
 var _ Peer = &InterceptPeer{}
 
-// func (i *InterceptPeer) Send(e Envelope) bool {
-// 	return i.iTransport.sendMessage(e)
-// }
+func (i *InterceptPeer) Send(e Envelope) bool {
+	if intercepted := i.iTransport.sendMessage(i.id, e); intercepted {
+		return intercepted
+	}
+	return i.peer.Send(e)
+}
+
+func (i *InterceptPeer) receive(chID byte, message []byte) {
+	reactor := i.cfg.reactorsByCh[chID]
+	if reactor == nil {
+		// Note that its ok to panic here as it's caught in the conn._recover,
+		// which does onPeerError.
+		panic(fmt.Sprintf("Unknown channel %X", chID))
+	}
+	mt := i.cfg.msgTypeByChID[chID]
+	msg := proto.Clone(mt)
+	err := proto.Unmarshal(message, msg)
+	if err != nil {
+		panic(fmt.Errorf("unmarshaling message: %s into type: %s", err, reflect.TypeOf(mt)))
+	}
+	if w, ok := msg.(Unwrapper); ok {
+		msg, err = w.Unwrap()
+		if err != nil {
+			panic(fmt.Errorf("unwrapping message: %s", err))
+		}
+	}
+	reactor.Receive(Envelope{
+		ChannelID: chID,
+		Src:       i.peer,
+		Message:   msg,
+	})
+}
