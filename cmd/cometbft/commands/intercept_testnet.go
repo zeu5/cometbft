@@ -58,7 +58,7 @@ func init() {
 	ITestnetFilesCmd.Flags().BoolVar(&randomMonikers, "random-monikers", false,
 		"randomize the moniker for each generated node")
 	ITestnetFilesCmd.Flags().IntVar(&interceptPort, "intercept-port", 2023, "Intercept port")
-	ITestnetFilesCmd.Flags().IntVar(&rpcPort, "rpc-port", 26756, "Intercept port")
+	ITestnetFilesCmd.Flags().IntVar(&rpcPort, "rpc-port", 26756, "Base RPC port")
 	ITestnetFilesCmd.Flags().StringVar(&interceptServerAddr, "intercept-server-addr", "localhost:7074", "Intercept server address")
 }
 
@@ -231,7 +231,7 @@ func persistentIPeersString(config *cfg.Config) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		persistentPeers[i] = p2p.IDAddressString(nodeKey.ID(), fmt.Sprintf("%s:%d", hostnameOrIP(0), p2pPort+i))
+		persistentPeers[i] = p2p.IDAddressString(nodeKey.ID(), fmt.Sprintf("localhost:%d", p2pPort+i))
 	}
 	return strings.Join(persistentPeers, ","), nil
 }

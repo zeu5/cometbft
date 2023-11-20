@@ -80,8 +80,6 @@ func (i *interceptNetworkClient) handleMessage(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Println("Received message of type: " + m.Type)
-
 	m.we = &wrappedEnvelope{}
 	if err := json.Unmarshal(m.Data, m.we); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "failed to unmarshal request"})
@@ -188,8 +186,8 @@ type interceptedMessage struct {
 }
 
 type wrappedEnvelope struct {
-	ChID byte
-	Msg  []byte
+	ChID byte   `json:"chid"`
+	Msg  []byte `json:"msg"`
 }
 
 type InterceptConfig struct {
@@ -247,6 +245,7 @@ func (i *InterceptTransport) Accept(pConfig peerConfig) (Peer, error) {
 	out := &InterceptPeer{
 		cfg:        pConfig,
 		iTransport: i,
+		id:         string(peer.ID()),
 		peer:       peer,
 	}
 	i.peers[string(peer.ID())] = out
@@ -278,9 +277,13 @@ func (i *InterceptTransport) sendMessage(to string, e Envelope) bool {
 	}
 
 	if _, ok := i.cfg.ChannelIDs[e.ChannelID]; ok {
-		// TODO: convert envelop to message and send
-		msgBytes, err := proto.Marshal(e.Message)
+		pMsg := e.Message
+		if w, ok := pMsg.(Wrapper); ok {
+			pMsg = w.Wrap()
+		}
+		msgBytes, err := proto.Marshal(pMsg)
 		if err != nil {
+			fmt.Printf("Error marshalling envelop message: %s", err)
 			return false
 		}
 		we := &wrappedEnvelope{
@@ -289,6 +292,7 @@ func (i *InterceptTransport) sendMessage(to string, e Envelope) bool {
 		}
 		bs, err := json.Marshal(we)
 		if err != nil {
+			fmt.Printf("Error marshalling wrapped envelope: %s", err)
 			return false
 		}
 		msg := &interceptedMessage{
@@ -313,7 +317,7 @@ func (i *InterceptTransport) receiveMessage() {
 		messages := i.iClient.getMessages()
 		if len(messages) > 0 {
 			for _, m := range messages {
-				peer, ok := i.peers[m.To]
+				peer, ok := i.peers[m.From]
 				if ok {
 					peer.receive(m.we.ChID, m.we.Msg)
 				}
