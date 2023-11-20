@@ -200,10 +200,11 @@ type InterceptConfig struct {
 
 type InterceptTransport struct {
 	*MultiplexTransport
-	Alias   string
-	cfg     InterceptConfig
-	iClient *interceptNetworkClient
-	peers   map[string]*InterceptPeer
+	Alias     string
+	cfg       InterceptConfig
+	iClient   *interceptNetworkClient
+	peers     map[string]*InterceptPeer
+	peersLock *sync.Mutex
 
 	doneCh chan struct{}
 }
@@ -215,6 +216,7 @@ func NewInterceptTransport(nodeInfo NodeInfo, nodeKey *NodeKey, mConfig conn.MCo
 		cfg:                iConfig,
 		MultiplexTransport: NewMultiplexTransport(nodeInfo, *nodeKey, mConfig),
 		peers:              make(map[string]*InterceptPeer),
+		peersLock:          new(sync.Mutex),
 		doneCh:             make(chan struct{}),
 	}
 }
@@ -248,7 +250,9 @@ func (i *InterceptTransport) Accept(pConfig peerConfig) (Peer, error) {
 		id:         string(peer.ID()),
 		peer:       peer,
 	}
+	i.peersLock.Lock()
 	i.peers[string(peer.ID())] = out
+	i.peersLock.Unlock()
 	return out, nil
 }
 
@@ -265,8 +269,18 @@ func (i *InterceptTransport) Dial(addr NetAddress, pConfig peerConfig) (Peer, er
 		peer:       peer,
 		id:         string(peer.ID()),
 	}
+	i.peersLock.Lock()
 	i.peers[string(peer.ID())] = out
+	i.peersLock.Unlock()
 	return out, nil
+}
+
+func (i *InterceptTransport) Cleanup(p Peer) {
+	i.MultiplexTransport.Cleanup(p)
+
+	i.peersLock.Lock()
+	defer i.peersLock.Unlock()
+	delete(i.peers, string(p.ID()))
 }
 
 func (i *InterceptTransport) sendMessage(to string, e Envelope) bool {
@@ -317,7 +331,9 @@ func (i *InterceptTransport) receiveMessage() {
 		messages := i.iClient.getMessages()
 		if len(messages) > 0 {
 			for _, m := range messages {
+				i.peersLock.Lock()
 				peer, ok := i.peers[m.From]
+				i.peersLock.Unlock()
 				if ok {
 					peer.receive(m.we.ChID, m.we.Msg)
 				}
@@ -346,6 +362,10 @@ func (i *InterceptPeer) Send(e Envelope) bool {
 }
 
 func (i *InterceptPeer) receive(chID byte, message []byte) {
+	if !i.IsRunning() {
+		return
+	}
+
 	reactor := i.cfg.reactorsByCh[chID]
 	if reactor == nil {
 		// Note that its ok to panic here as it's caught in the conn._recover,
