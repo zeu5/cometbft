@@ -413,6 +413,7 @@ func (conR *Reactor) WaitSync() bool {
 
 // Special flag to make the node byzantine by always voting nil
 func (conR *Reactor) BecomeByzantine() {
+	conR.Logger.Info("Becoming a byzantine node!")
 	conR.conS.SetVoteNil()
 }
 
