@@ -17,13 +17,22 @@ import (
 	"github.com/zeu5/cometbft/p2p/conn"
 )
 
+type interceptConfig struct {
+	ID              int
+	ListenAddr      string
+	ServerAddr      string
+	BecomeByzantine func()
+	NodeKey         *NodeKey
+}
+
 type interceptNetworkClient struct {
-	ID         int
-	Addr       string
-	ServerAddr string
-	ctr        map[string]int
-	ctrLock    *sync.Mutex
-	nodeKey    *NodeKey
+	ID              int
+	Addr            string
+	ServerAddr      string
+	ctr             map[string]int
+	ctrLock         *sync.Mutex
+	nodeKey         *NodeKey
+	becomeByzantine func()
 
 	receivedMessages []*interceptedMessage
 	lock             *sync.Mutex
@@ -31,17 +40,18 @@ type interceptNetworkClient struct {
 	server *http.Server
 }
 
-func newInterceptNetworkClient(id int, listenAddr string, serverAddr string, nodeKey *NodeKey) *interceptNetworkClient {
+func newInterceptNetworkClient(iconfig *interceptConfig) *interceptNetworkClient {
 
 	i := &interceptNetworkClient{
-		ID:               id,
-		Addr:             listenAddr,
-		ServerAddr:       serverAddr,
+		ID:               iconfig.ID,
+		Addr:             iconfig.ListenAddr,
+		ServerAddr:       iconfig.ServerAddr,
 		ctr:              make(map[string]int),
 		ctrLock:          new(sync.Mutex),
-		nodeKey:          nodeKey,
+		nodeKey:          iconfig.NodeKey,
 		receivedMessages: make([]*interceptedMessage, 0),
 		lock:             new(sync.Mutex),
+		becomeByzantine:  iconfig.BecomeByzantine,
 
 		server: nil,
 	}
@@ -49,9 +59,10 @@ func newInterceptNetworkClient(id int, listenAddr string, serverAddr string, nod
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.POST("/message", i.handleMessage)
+	r.POST("/byzantine", i.handleByzantine)
 
 	i.server = &http.Server{
-		Addr:    listenAddr,
+		Addr:    iconfig.ListenAddr,
 		Handler: r,
 	}
 
@@ -71,6 +82,11 @@ func (i *interceptNetworkClient) nextID(from, to string) string {
 	i.ctrLock.Unlock()
 
 	return fmt.Sprintf("%s_%d", key, ctr)
+}
+
+func (i *interceptNetworkClient) handleByzantine(ctx *gin.Context) {
+	i.becomeByzantine()
+	ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
 func (i *interceptNetworkClient) handleMessage(ctx *gin.Context) {
@@ -193,6 +209,7 @@ type wrappedEnvelope struct {
 type InterceptConfig struct {
 	ChannelIDs      map[byte]bool
 	MessageTypeFunc func(proto.Message) string
+	BecomeByzantine func()
 	ListenAddr      string
 	ServerAddr      string
 	ID              int
@@ -211,7 +228,13 @@ type InterceptTransport struct {
 
 func NewInterceptTransport(nodeInfo NodeInfo, nodeKey *NodeKey, mConfig conn.MConnConfig, iConfig InterceptConfig) *InterceptTransport {
 	return &InterceptTransport{
-		iClient:            newInterceptNetworkClient(iConfig.ID, iConfig.ListenAddr, iConfig.ServerAddr, nodeKey),
+		iClient: newInterceptNetworkClient(&interceptConfig{
+			ID:              iConfig.ID,
+			ListenAddr:      iConfig.ListenAddr,
+			ServerAddr:      iConfig.ServerAddr,
+			NodeKey:         nodeKey,
+			BecomeByzantine: iConfig.BecomeByzantine,
+		}),
 		Alias:              string(nodeInfo.ID()),
 		cfg:                iConfig,
 		MultiplexTransport: NewMultiplexTransport(nodeInfo, *nodeKey, mConfig),

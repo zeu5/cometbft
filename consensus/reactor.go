@@ -411,6 +411,11 @@ func (conR *Reactor) WaitSync() bool {
 	return conR.waitSync.Load()
 }
 
+// Special flag to make the node byzantine by always voting nil
+func (conR *Reactor) BecomeByzantine() {
+	conR.conS.SetVoteNil()
+}
+
 //--------------------------------------
 
 // subscribeToBroadcastEvents subscribes for new round steps and votes

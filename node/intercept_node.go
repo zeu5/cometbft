@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/gogoproto/proto"
 	abci "github.com/zeu5/cometbft/abci/types"
 	cfg "github.com/zeu5/cometbft/config"
+	"github.com/zeu5/cometbft/consensus"
 	"github.com/zeu5/cometbft/libs/log"
 	"github.com/zeu5/cometbft/libs/service"
 	"github.com/zeu5/cometbft/p2p"
@@ -219,7 +220,7 @@ func NewInterceptNode(ctx context.Context,
 	}
 
 	// Setup Transport.
-	transport, peerFilters := createInterceptTransport(config, nodeInfo, nodeKey, proxyApp, consensusReactor.GetChannels(), getConsensusMessageTypeFunc())
+	transport, peerFilters := createInterceptTransport(config, nodeInfo, nodeKey, proxyApp, consensusReactor, getConsensusMessageTypeFunc())
 
 	// Setup Switch.
 	p2pLogger := logger.With("module", "p2p")
@@ -307,22 +308,30 @@ func createInterceptTransport(
 	nodeInfo p2p.NodeInfo,
 	nodeKey *p2p.NodeKey,
 	proxyApp proxy.AppConns,
-	filteredChannels []*p2p.ChannelDescriptor,
+	cs *consensus.Reactor,
 	messageTypeFunc func(proto.Message) string,
 ) (
 	*p2p.InterceptTransport,
 	[]p2p.PeerFilterFunc,
 ) {
 	mConfig := p2p.MConnConfig(config.P2P)
+	becomeByzantine := func(cs *consensus.Reactor) func() {
+		return func() {
+			cs.BecomeByzantine()
+		}
+	}(cs)
+
 	iConfig := p2p.InterceptConfig{
 		ChannelIDs:      make(map[byte]bool),
 		ListenAddr:      config.P2P.TestInterceptConfig.ListenAddr,
 		ServerAddr:      config.P2P.TestInterceptConfig.ServerAddr,
 		ID:              config.P2P.TestInterceptConfig.ID,
 		MessageTypeFunc: messageTypeFunc,
+		BecomeByzantine: becomeByzantine,
 	}
 	connFilters := []p2p.ConnFilterFunc{}
 
+	filteredChannels := cs.GetChannels()
 	for _, c := range filteredChannels {
 		iConfig.ChannelIDs[c.ID] = true
 	}

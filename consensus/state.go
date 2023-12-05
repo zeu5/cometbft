@@ -9,6 +9,7 @@ import (
 	"os"
 	"runtime/debug"
 	"sort"
+	"sync"
 	"time"
 
 	"github.com/cosmos/gogoproto/proto"
@@ -135,6 +136,10 @@ type State struct {
 
 	// offline state sync height indicating to which height the node synced offline
 	offlineStateSyncHeight int64
+
+	// concurrent access flag that indicates if the node should always vote nil
+	voteNil     bool
+	voteNilLock *sync.Mutex
 }
 
 // StateOption sets an optional parameter on the State.
@@ -165,6 +170,8 @@ func NewState(
 		evpool:           evpool,
 		evsw:             cmtevents.NewEventSwitch(),
 		metrics:          NopMetrics(),
+		voteNil:          false,
+		voteNilLock:      new(sync.Mutex),
 	}
 	for _, option := range options {
 		option(cs)
@@ -392,6 +399,19 @@ func (cs *State) OnStart() error {
 	cs.scheduleRound0(cs.GetRoundState())
 
 	return nil
+}
+
+func (cs *State) SetVoteNil() {
+	cs.voteNilLock.Lock()
+	cs.voteNil = true
+	cs.voteNilLock.Unlock()
+}
+
+// shouldVoteNil will return true if the config has been set to always vote nil
+func (cs *State) shouldVoteNil() bool {
+	cs.voteNilLock.Lock()
+	defer cs.voteNilLock.Unlock()
+	return cs.voteNil
 }
 
 // timeoutRoutine: receive requests for timeouts on tickChan and fire timeouts on tockChan
@@ -2468,6 +2488,12 @@ func (cs *State) signAddVote(
 	// If the node not in the validator set, do nothing.
 	if !cs.Validators.HasAddress(cs.privValidatorPubKey.Address()) {
 		return
+	}
+
+	if cs.shouldVoteNil() {
+		hash = nil
+		header = types.PartSetHeader{}
+		block = nil
 	}
 
 	// TODO: pass pubKey to signVote
