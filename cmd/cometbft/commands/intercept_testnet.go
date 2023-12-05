@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -21,6 +22,10 @@ var (
 	interceptPort       int
 	rpcPort             int
 	interceptServerAddr string
+	timeoutPropose      int
+	timeoutPrevote      int
+	timeoutPrecommit    int
+	timeoutCommit       int
 )
 
 func init() {
@@ -57,9 +62,20 @@ func init() {
 		"P2P Port")
 	ITestnetFilesCmd.Flags().BoolVar(&randomMonikers, "random-monikers", false,
 		"randomize the moniker for each generated node")
-	ITestnetFilesCmd.Flags().IntVar(&interceptPort, "intercept-port", 2023, "Intercept port")
-	ITestnetFilesCmd.Flags().IntVar(&rpcPort, "rpc-port", 26756, "Base RPC port")
-	ITestnetFilesCmd.Flags().StringVar(&interceptServerAddr, "intercept-server-addr", "localhost:7074", "Intercept server address")
+	ITestnetFilesCmd.Flags().IntVar(&interceptPort, "intercept-port", 2023,
+		"Intercept port")
+	ITestnetFilesCmd.Flags().IntVar(&rpcPort, "rpc-port", 26756,
+		"Base RPC port")
+	ITestnetFilesCmd.Flags().StringVar(&interceptServerAddr, "intercept-server-addr", "localhost:7074",
+		"Intercept server address")
+	ITestnetFilesCmd.Flags().IntVar(&timeoutPropose, "timeout-propose", 100,
+		"Proposal Timeout")
+	ITestnetFilesCmd.Flags().IntVar(&timeoutPrevote, "timeout-prevote", 50,
+		"Prevote Timeout")
+	ITestnetFilesCmd.Flags().IntVar(&timeoutPrecommit, "timeout-precommit", 50,
+		"Precommit Timeout")
+	ITestnetFilesCmd.Flags().IntVar(&timeoutCommit, "timeout-commit", 20,
+		"Commit Timeout")
 }
 
 // TestnetFilesCmd allows initialisation of files for a CometBFT testnet.
@@ -89,6 +105,14 @@ func interceptTestnetFiles(*cobra.Command, []string) error {
 	}
 
 	config := cfg.DefaultConfig()
+
+	config.Consensus.TimeoutProposeDelta = 10 * time.Millisecond
+	config.Consensus.TimeoutPrevoteDelta = 10 * time.Millisecond
+	config.Consensus.TimeoutPrecommitDelta = 10 * time.Millisecond
+	config.Consensus.TimeoutPropose = time.Duration(timeoutPropose) * time.Millisecond
+	config.Consensus.TimeoutPrevote = time.Duration(timeoutPrevote) * time.Millisecond
+	config.Consensus.TimeoutPrecommit = time.Duration(timeoutPrecommit) * time.Millisecond
+	config.Consensus.TimeoutCommit = time.Duration(timeoutCommit) * time.Millisecond
 
 	// overwrite default config if set and valid
 	if configFile != "" {
