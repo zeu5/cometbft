@@ -356,6 +356,7 @@ var _ Peer = &InterceptPeer{}
 
 func (i *InterceptPeer) Send(e Envelope) bool {
 	if intercepted := i.iTransport.sendMessage(i.id, e); intercepted {
+		i.Logger.Info("Sent message", "messages", e.Message.String())
 		return intercepted
 	}
 	return i.peer.Send(e)
@@ -365,7 +366,6 @@ func (i *InterceptPeer) receive(chID byte, message []byte) {
 	if !i.IsRunning() {
 		return
 	}
-
 	reactor := i.cfg.reactorsByCh[chID]
 	if reactor == nil {
 		// Note that its ok to panic here as it's caught in the conn._recover,
@@ -384,6 +384,7 @@ func (i *InterceptPeer) receive(chID byte, message []byte) {
 			panic(fmt.Errorf("unwrapping message: %s", err))
 		}
 	}
+	i.Logger.Info("Received message", "message", msg.String())
 	reactor.Receive(Envelope{
 		ChannelID: chID,
 		Src:       i.peer,
