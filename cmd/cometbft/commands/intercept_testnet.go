@@ -26,6 +26,7 @@ var (
 	timeoutPrevote      int
 	timeoutPrecommit    int
 	timeoutCommit       int
+	debugLogs           bool
 )
 
 func init() {
@@ -76,6 +77,8 @@ func init() {
 		"Precommit Timeout")
 	ITestnetFilesCmd.Flags().IntVar(&timeoutCommit, "timeout-commit", 20,
 		"Commit Timeout")
+	ITestnetFilesCmd.Flags().BoolVar(&debugLogs, "debug", false,
+		"Debug logs")
 }
 
 // TestnetFilesCmd allows initialisation of files for a CometBFT testnet.
@@ -106,6 +109,9 @@ func interceptTestnetFiles(*cobra.Command, []string) error {
 
 	config := cfg.DefaultConfig()
 
+	if debugLogs {
+		config.LogLevel = "debug"
+	}
 	config.Consensus.TimeoutProposeDelta = 10 * time.Millisecond
 	config.Consensus.TimeoutPrevoteDelta = 10 * time.Millisecond
 	config.Consensus.TimeoutPrecommitDelta = 10 * time.Millisecond
