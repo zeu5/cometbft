@@ -113,6 +113,10 @@ func (i *interceptNetworkClient) Start() error {
 		i.server.ListenAndServe()
 	}()
 
+	return nil
+}
+
+func (i *interceptNetworkClient) Ready() error {
 	client := &http.Client{
 		Transport: &http.Transport{
 			DialContext: (&net.Dialer{
@@ -249,6 +253,10 @@ func (i *InterceptTransport) Close() error {
 	i.iClient.Stop()
 	close(i.doneCh)
 	return err
+}
+
+func (i *InterceptTransport) MarkReady() error {
+	return i.iClient.Ready()
 }
 
 func (i *InterceptTransport) Listen(addr NetAddress) error {

@@ -221,6 +221,7 @@ func NewInterceptNode(ctx context.Context,
 
 	// Setup Transport.
 	transport, peerFilters := createInterceptTransport(config, nodeInfo, nodeKey, proxyApp, consensusReactor, getConsensusMessageTypeFunc())
+	registerWaitSyncListener(consensusReactor, transport)
 
 	// Setup Switch.
 	p2pLogger := logger.With("module", "p2p")
@@ -428,4 +429,11 @@ func getConsensusMessageTypeFunc() func(proto.Message) string {
 		}
 		return ""
 	}
+}
+
+func registerWaitSyncListener(cr *consensus.Reactor, it *p2p.InterceptTransport) {
+	listener := func() {
+		it.MarkReady()
+	}
+	cr.WaitSyncListener = listener
 }

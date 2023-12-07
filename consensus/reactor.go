@@ -44,8 +44,9 @@ type Reactor struct {
 
 	conS *State
 
-	waitSync atomic.Bool
-	eventBus *types.EventBus
+	waitSync         atomic.Bool
+	eventBus         *types.EventBus
+	WaitSyncListener func()
 
 	rsMtx cmtsync.Mutex
 	rs    *cstypes.RoundState
@@ -132,6 +133,8 @@ func (conR *Reactor) SwitchToConsensus(state sm.State, skipWAL bool) {
 
 	// stop waiting for syncing to finish
 	conR.waitSync.Store(false)
+
+	go conR.WaitSyncListener()
 
 	if skipWAL {
 		conR.conS.doWALCatchup = false

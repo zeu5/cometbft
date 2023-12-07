@@ -113,6 +113,8 @@ func interceptTestnetFiles(*cobra.Command, []string) error {
 	config.Consensus.TimeoutPrevote = time.Duration(timeoutPrevote) * time.Millisecond
 	config.Consensus.TimeoutPrecommit = time.Duration(timeoutPrecommit) * time.Millisecond
 	config.Consensus.TimeoutCommit = time.Duration(timeoutCommit) * time.Millisecond
+	config.Consensus.PeerGossipSleepDuration = 10 * time.Millisecond
+	config.Consensus.PeerQueryMaj23SleepDuration = 100 * time.Millisecond
 
 	// overwrite default config if set and valid
 	if configFile != "" {
