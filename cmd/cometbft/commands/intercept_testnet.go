@@ -27,6 +27,7 @@ var (
 	timeoutPrecommit    int
 	timeoutCommit       int
 	debugLogs           bool
+	createEmptyBlocks   bool
 )
 
 func init() {
@@ -79,6 +80,8 @@ func init() {
 		"Commit Timeout")
 	ITestnetFilesCmd.Flags().BoolVar(&debugLogs, "debug", false,
 		"Debug logs")
+	ITestnetFilesCmd.Flags().BoolVar(&createEmptyBlocks, "create-empty-blocks", false,
+		"Create empty blocks")
 }
 
 // TestnetFilesCmd allows initialisation of files for a CometBFT testnet.
@@ -111,6 +114,10 @@ func interceptTestnetFiles(*cobra.Command, []string) error {
 
 	if debugLogs {
 		config.LogLevel = "debug"
+	}
+	if createEmptyBlocks {
+		config.Consensus.CreateEmptyBlocks = true
+		config.Consensus.CreateEmptyBlocksInterval = 5 * time.Millisecond
 	}
 	config.Consensus.TimeoutProposeDelta = 10 * time.Millisecond
 	config.Consensus.TimeoutPrevoteDelta = 10 * time.Millisecond
@@ -232,7 +239,6 @@ func interceptTestnetFiles(*cobra.Command, []string) error {
 		config.SetRoot(nodeDir)
 
 		config.ProxyApp = "kvstore"
-		config.Consensus.CreateEmptyBlocks = false
 
 		config.RPC.ListenAddress = fmt.Sprintf("tcp://localhost:%d", rpcPort+i)
 		config.P2P.ListenAddress = fmt.Sprintf("tcp://localhost:%d", p2pPort+i)
