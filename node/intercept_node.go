@@ -12,9 +12,11 @@ import (
 	"github.com/zeu5/cometbft/libs/log"
 	"github.com/zeu5/cometbft/libs/service"
 	"github.com/zeu5/cometbft/p2p"
+	"github.com/zeu5/cometbft/p2p/conn"
 	"github.com/zeu5/cometbft/p2p/pex"
 	"github.com/zeu5/cometbft/privval"
 	cmtcons "github.com/zeu5/cometbft/proto/tendermint/consensus"
+	sscons "github.com/zeu5/cometbft/proto/tendermint/statesync"
 	"github.com/zeu5/cometbft/proxy"
 	sm "github.com/zeu5/cometbft/state"
 	"github.com/zeu5/cometbft/statesync"
@@ -220,7 +222,8 @@ func NewInterceptNode(ctx context.Context,
 	}
 
 	// Setup Transport.
-	transport, peerFilters := createInterceptTransport(config, nodeInfo, nodeKey, proxyApp, consensusReactor, getConsensusMessageTypeFunc())
+	transport, peerFilters := createInterceptTransport(
+		config, nodeInfo, nodeKey, proxyApp, consensusReactor, getMessageTypeFunc(), stateSyncReactor.GetChannels()...)
 	registerWaitSyncListener(consensusReactor, transport)
 
 	// Setup Switch.
@@ -311,6 +314,7 @@ func createInterceptTransport(
 	proxyApp proxy.AppConns,
 	cs *consensus.Reactor,
 	messageTypeFunc func(proto.Message) string,
+	interceptChannels ...*conn.ChannelDescriptor,
 ) (
 	*p2p.InterceptTransport,
 	[]p2p.PeerFilterFunc,
@@ -334,6 +338,9 @@ func createInterceptTransport(
 
 	filteredChannels := cs.GetChannels()
 	for _, c := range filteredChannels {
+		iConfig.ChannelIDs[c.ID] = true
+	}
+	for _, c := range interceptChannels {
 		iConfig.ChannelIDs[c.ID] = true
 	}
 
@@ -393,7 +400,7 @@ func createInterceptTransport(
 	return transport, peerFilters
 }
 
-func getConsensusMessageTypeFunc() func(proto.Message) string {
+func getMessageTypeFunc() func(proto.Message) string {
 	return func(msg proto.Message) string {
 		switch msg := msg.(type) {
 		case *cmtcons.NewRoundStep:
@@ -425,6 +432,14 @@ func getConsensusMessageTypeFunc() func(proto.Message) string {
 			return "VoteSetMaj23"
 		case *cmtcons.VoteSetBits:
 			return "VoteSetBits"
+		case *sscons.ChunkRequest:
+			return "ChunkRequest"
+		case *sscons.ChunkResponse:
+			return "ChunkResponse"
+		case *sscons.SnapshotsRequest:
+			return "SnapshotRequest"
+		case *sscons.SnapshotsResponse:
+			return "SnapshotResponse"
 		default:
 		}
 		return ""
