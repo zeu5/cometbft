@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"time"
 
 	"github.com/cosmos/gogoproto/proto"
 	abci "github.com/zeu5/cometbft/abci/types"
@@ -449,6 +450,7 @@ func getMessageTypeFunc() func(proto.Message) string {
 func registerWaitSyncListener(cr *consensus.Reactor, it *p2p.InterceptTransport) {
 	listener := func() {
 		it.MarkReady()
+		time.Sleep(10 * time.Millisecond)
 	}
 	cr.WaitSyncListener = listener
 }

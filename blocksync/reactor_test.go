@@ -321,7 +321,7 @@ func TestCheckSwitchToConsensusLastHeightZero(t *testing.T) {
 
 	reactorPairs := make([]ReactorPair, 1, 2)
 	reactorPairs[0] = newReactor(t, log.TestingLogger(), genDoc, privVals, 0)
-	reactorPairs[0].reactor.switchToConsensusMs = 50
+	reactorPairs[0].reactor.SwitchToConsensusMs = 50
 	defer func() {
 		for _, r := range reactorPairs {
 			err := r.reactor.Stop()

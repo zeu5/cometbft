@@ -497,6 +497,9 @@ chunk_fetchers = "{{ .StateSync.ChunkFetchers }}"
 #   1) "v0" - the default block sync implementation
 version = "{{ .BlockSync.Version }}"
 
+# Tick duration to check if state has been synced
+switch_tick_duration = "{{ .BlockSync.SwitchTickDuration }}"
+
 #######################################################
 ###         Consensus Configuration Options         ###
 #######################################################

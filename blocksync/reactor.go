@@ -64,7 +64,7 @@ type Reactor struct {
 	requestsCh <-chan BlockRequest
 	errorsCh   <-chan peerError
 
-	switchToConsensusMs int
+	SwitchToConsensusMs int
 
 	metrics *Metrics
 }
@@ -293,10 +293,10 @@ func (bcR *Reactor) poolRoutine(stateSynced bool) {
 	statusUpdateTicker := time.NewTicker(statusUpdateIntervalSeconds * time.Second)
 	defer statusUpdateTicker.Stop()
 
-	if bcR.switchToConsensusMs == 0 {
-		bcR.switchToConsensusMs = switchToConsensusIntervalSeconds * 1000
+	if bcR.SwitchToConsensusMs == 0 {
+		bcR.SwitchToConsensusMs = switchToConsensusIntervalSeconds * 1000
 	}
-	switchToConsensusTicker := time.NewTicker(time.Duration(bcR.switchToConsensusMs) * time.Millisecond)
+	switchToConsensusTicker := time.NewTicker(time.Duration(bcR.SwitchToConsensusMs) * time.Millisecond)
 	defer switchToConsensusTicker.Stop()
 
 	blocksSynced := uint64(0)
